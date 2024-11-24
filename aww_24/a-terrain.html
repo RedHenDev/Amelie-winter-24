@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Procedural Terrain blue-tit</title>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script> -->
+    <title>Amèlie's Christmas Land</title>
+
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
     <!-- For terrain generation using procedural noise.-->
@@ -27,10 +27,7 @@
 
     <script src="thalassa.js"></script>
 
-    <!-- <script src="l-forest.js"></script> -->
-    
-        <!-- <script src="folder-scrape.js"></script> -->
-        <!-- <script src="auto_gallery.js"></script> -->
+        <script src="auto_gallery.js"></script>
 
         <!-- preloading assets -->
         <a-assets>
@@ -39,17 +36,13 @@
         
             <a-asset-item id="great-hall" src="great_hall.glb"></a-asset-item>
 
-            <!-- <a-asset-item id="hogz" src="hw1.glb"></a-asset-item> -->
-
-            <!-- <a-asset-item id="edward" src="shuttle.obj"></a-asset-item> -->
-
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
         
         </a-assets>
 
 
         <!-- Player with terrain locomotion system. -->
-        <a-entity id="player" position="0 25 0" terrain-movement="height: 3.2">
+        <a-entity id="player" position="0 25 0" terrain-movement="height: 4.6">
             <a-camera id="cam" wasd-controls="enabled: false" look-controls>
                 <!-- micro HUD Interface -->
                 <a-entity id="micro-hud">
@@ -59,7 +52,7 @@
                                 material="color: #0AA; opacity: 0.1; depthTest: false">
                                 <a-text  
                                     id="micro-hud-text"
-                                    value="hi mum"
+                                    value="Amèlie Land"
                                     position="0 0 0.01"
                                     scale="1 1 1" 
                                     align="center"
@@ -111,14 +104,15 @@
                         
 
         <!-- Point light positioned away from the centre. -->
+        <!-- color: #FDB800; -->
         <a-entity
         light="type: point;
-            color: #FDB800;
+            color: #AAA;
             intensity: 0.8;
             distance: 0;
             decay: 0;
             castShadow: true"
-        position="0 0 -127">
+        position="0 90 -127">
         <!-- Visual representation of the light source. -->
         <!-- <a-sphere radius="20" 
                 material="color: #FDB813; 
@@ -144,7 +138,7 @@
         <a-entity   terrain-generator 
                     terrain-grass-generator 
                     terrain-plant-generator
-                    
+                    terrain-forest-generator
         ></a-entity>
 
         <!-- Here is where we load in obj models -->
@@ -167,15 +161,24 @@
         <!-- <a-obj-model src="#grave-digger" scale="3 3 3" color="pink"></a-obj-model> -->
         <!-- <a-obj-model src="#grave-digger" position ="64 1.8 -42" scale="0.03 0.03 0.03" color="white"></a-obj-model> -->
 
-        <a-entity gltf-model="#great-hall"
-                    position ="0 24 -8" 
-                    scale="2 2 2"
-                    rotation="0 63 0"></a-entity>
+        <a-entity 
+                    id="petite-hall"
+                    gltf-model="#great-hall"
+                    position ="0 0 0" 
+                    scale="1 1 1"
+                    rotation="0 0 0"></a-entity>
 
-        <!-- <a-entity gltf-model="#great-hall"
-                    position ="0 260 -820" 
-                    scale="42 42 42"
-                    rotation="0 63 0"></a-entity> -->
+        <script> 
+                
+                const hallHeight=-6.6;//getTerrainHeight(0,128);
+                document.querySelector("#petite-hall").setAttribute
+                    ('position',`88 ${hallHeight} 64`); 
+        </script>
+
+        <a-entity gltf-model="#great-hall"
+                    position ="0 300 -1488" 
+                    scale="62 62 62"
+                    rotation="0 63 0"></a-entity>
         
         <!-- <a-entity gltf-model="#hogz"
                     position ="0 0.453 4" 
