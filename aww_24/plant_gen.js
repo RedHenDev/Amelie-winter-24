@@ -5,7 +5,7 @@ AFRAME.registerComponent('terrain-plant-generator', {
         count: { type: 'number', default: 128 },
         range: { type: 'number', default: 128 },
         bladeWidth: { type: 'number', default: 0.09 },
-        minHeight: { type: 'number', default: 0.1 },
+        minHeight: { type: 'number', default: 0.7 },
         bladeHeight: { type: 'number', default: 7 },
         windStrength: { type: 'number', default: 0.1 },
         windTurbulence: { type: 'number', default: 0.05 }

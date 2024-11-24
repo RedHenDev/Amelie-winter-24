@@ -115,17 +115,17 @@ function getTerrainHeight(x, z) {
     // Large features (mountains and valleys)
     // Original values 0.5 and 24.
     // General spread multiplier attempt. Default 1.
-    const gSpread = 0.8;
-    height += noise.noise(xCoord * 0.1 * gSpread, 0, zCoord * 0.1 * gSpread) * 64;  // Increased from 10.
+    const gSpread = 0.088;
+    height += noise.noise(xCoord * 0.1 * gSpread, 0, zCoord * 0.1 * gSpread) * 1024;  // Increased from 10.
     
     // Medium features (hills)
-    height += noise.noise(xCoord * 1 * gSpread, 0, zCoord * 1 * gSpread) * 12;  // New medium scale.
+    height += noise.noise(xCoord * 1 * gSpread, 0, zCoord * 1 * gSpread) * 512;  // New medium scale.
     
     // Small features (rough terrain)
-    height += noise.noise(xCoord * 2 * gSpread, 0, zCoord * 2 * gSpread) * 6;
+    height += noise.noise(xCoord * 2 * gSpread, 0, zCoord * 2 * gSpread) * 128;
     
     // Micro features (texture)
-    height += noise.noise(xCoord * 4 * gSpread, 0, zCoord * 4 * gSpread) * 3;
+    height += noise.noise(xCoord * 4 * gSpread, 0, zCoord * 4 * gSpread) * 64;
     
     // Mountain generation with more variation
     const mountainNoise = noise.noise(xCoord * 0.25 * gSpread, 0, zCoord * 0.25 * gSpread);
@@ -156,16 +156,16 @@ function getTerrainHeight(x, z) {
 
     let biomes=true;
     let erosion=true;
-    let ridges=false;
+    let ridges=true;
     // Add biomes.
     if (biomes){
         height += getBiomeHeight(x,z,gSpread)
     }
     // Add ridges.
     if (ridges){
-        const ridgeNoise = getRidgeNoise(xCoord * 0.5, zCoord * 0.5);
+        const ridgeNoise = getRidgeNoise(xCoord * 0.5 * gSpread, zCoord * 0.5 * gSpread);
         // Ridge strength default 30, not 12.
-        height += ridgeNoise * ridgeNoise * 12; // Square it for sharper ridges.
+        height += ridgeNoise * ridgeNoise * 30; // Square it for sharper ridges.
     }
     // Add erosion.
     if (erosion){
@@ -362,6 +362,8 @@ function getBiomeHeight(x, z, gSpread) {
     const xCoord = x * 0.05 * gSpread;
     const zCoord = z * 0.05 * gSpread;
     
+const boost = 1;
+
     // Biome selection.
     const biomeNoise = noise.noise(xCoord * 0.002, 0, zCoord * 0.002);
     
@@ -371,23 +373,23 @@ function getBiomeHeight(x, z, gSpread) {
     // Hills is 0.6.
     if (biomeNoise < 0.5) {
         // Plains biome
-        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 8;
-        height += noise.noise(xCoord * 2, 0, zCoord * 2) * 4;
+        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 8 * boost;
+        height += noise.noise(xCoord * 2, 0, zCoord * 2) * 4* boost;
         
     } else if (biomeNoise < 0.6) {
         // Hills biome
-        height += noise.noise(xCoord * 0.5, 0, zCoord * 0.5) * 20;
-        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 10;
+        height += noise.noise(xCoord * 0.5, 0, zCoord * 0.5) * 20* boost;
+        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 10* boost;
         
     } else {
         // Mountains biome
-        height += noise.noise(xCoord * 0.3, 0, zCoord * 0.3) * 35;
-        height += noise.noise(xCoord * 0.8, 0, zCoord * 0.8) * 15;
+        height += noise.noise(xCoord * 0.3, 0, zCoord * 0.3) * 35* boost;
+        height += noise.noise(xCoord * 0.8, 0, zCoord * 0.8) * 15* boost;
         
         // Sharp peaks
         const peakNoise = noise.noise(xCoord * 1.5, 0, zCoord * 1.5);
         if (peakNoise > 0.7) {
-            height += Math.pow(peakNoise - 0.7, 2) * 60;
+            height += Math.pow(peakNoise - 0.7, 2) * 60* boost;
         }
     }
     

@@ -8,13 +8,12 @@ AFRAME.registerComponent('generate-hud', {
     // Create main HUD entity.
     const hudEntity = document.createElement('a-entity');
     const sceneEl = document.querySelector('a-scene');
+    const playerEl = document.querySelector('#player');
     hudEntity.setAttribute('id', 'hud');
-    hudEntity.setAttribute('follow-camera', '');
-    //hudEntity.setAttribute('position', '0 2 -2');
 
     // Create background panel (plane)
     const panel = document.createElement('a-plane');
-    panel.setAttribute('position', '0 2 -3');
+    panel.setAttribute('position', '0 0 -3');
     panel.setAttribute('rotation', '0 0 0');
     panel.setAttribute('width', '4');
     panel.setAttribute('height', '2');
@@ -104,6 +103,7 @@ AFRAME.registerComponent('generate-hud', {
     //button5.setAttribute('position', "440 12 -365");
     button5.setAttribute('position', "440 20 -400");
     button5.setAttribute('scale', "12 12 12");
+    button5.setAttribute('buttonText', 'position', '0 0 0.1');
 
     // Add buttons to panel.
     panel.appendChild(button1);
@@ -118,38 +118,12 @@ AFRAME.registerComponent('generate-hud', {
     hudEntity.appendChild(panel);
 
     // Add HUD to scene.
-    sceneEl.appendChild(hudEntity);
+    //sceneEl.appendChild(hudEntity);
+    playerEl.appendChild(hudEntity);
     // Begin hidden.
     hudEntity.object3D.visible=false;
-  },
-
-});
-
-// Component to make an entity follow the camera.
-AFRAME.registerComponent('follow-camera', {
-  tick: function () {
-    // Not visible? Don't move me.
-    if (!this.el.object3D.visible)return;
-
-    const camera = document.querySelector('#player');
-    if (!camera) return;
-    
-    // Get camera world position.
-    const worldPos = new THREE.Vector3();
-    camera.object3D.getWorldPosition(worldPos);
-    
-    // Position HUD in front of camera.
-    const distance = -0.5; // Distance from camera.
-    const cameraDirection = new THREE.Vector3();
-    camera.object3D.getWorldDirection(cameraDirection);
-    
-    this.el.object3D.position.copy(worldPos).add(cameraDirection.multiplyScalar(distance));
-    
-    // Make HUD face camera.
-    this.el.object3D.lookAt(worldPos);
-    if (!this.el.object3D.visible)
-    this.el.object3D.position.y=999;
   }
+
 });
 
 // Component to handle button states.

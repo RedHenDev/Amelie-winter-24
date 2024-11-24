@@ -19,7 +19,7 @@ DONE -feature double sided canopy
 
 -bug correct pitch when at zero?
 
--project organise projects: for Amelie; for DEV; collapse VR and basic into 1 proj
+DONE -project organise projects: for Amelie; for DEV; collapse VR and basic into 1 proj
             (DEV), and think about how to maintain updated integration in modular way
 
 -feature collision with trees by Map()-ing their locations and widths
@@ -30,6 +30,7 @@ DONE -feature double sided canopy
 
 -feature 'game' manager, so that particular features only appear for particular
             world seeds or by some other determinant.
+            see urizen.js 282; see HUD.js
 
 -bug text on top
 

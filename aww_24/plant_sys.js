@@ -45,7 +45,8 @@ AFRAME.registerComponent('plant-system', {
         // Helper function to create a single blade of grass
         const createBlade = (baseX, baseY, baseZ, height, lean, rotation) => {
             const segments = 4;
-            const width = 0.02 + Math.random() * 0.02;
+            // 0.02 not 0.2.
+            const width = 0.2 + Math.random() * 0.2;
             
             let prevLeft, prevRight; // Store previous points for proper segment joining
             
