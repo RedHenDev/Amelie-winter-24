@@ -101,7 +101,8 @@ AFRAME.registerComponent('generate-hud', {
     });
     // Place button out in world, not on Hud. Note lower we append
     // to scene and not Hud.
-    button5.setAttribute('position', "440 12 -365");
+    //button5.setAttribute('position', "440 12 -365");
+    button5.setAttribute('position', "440 20 -400");
     button5.setAttribute('scale', "12 12 12");
 
     // Add buttons to panel.
