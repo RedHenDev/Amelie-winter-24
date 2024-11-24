@@ -2,7 +2,7 @@ AFRAME.registerComponent('terrain-forest-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 5 },
+        count: { type: 'number', default: 3 },
         range: { type: 'number', default: 64 },
         minHeight: { type: 'number', default: 12 },
         maxHeight: { type: 'number', default: 18 },

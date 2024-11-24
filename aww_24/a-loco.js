@@ -55,7 +55,7 @@ AFRAME.registerComponent('terrain-movement', {
             if (e.code === 'Space') {
                 this.hud.visible=!this.hud.visible;
                 if (this.hud.visible){
-                this.hud.position.y=0;
+                this.hud.position.y=2;
                 this.hud.rotation.y=this.cam.rotation.y;
                 }
                 else this.hud.position.y=999;

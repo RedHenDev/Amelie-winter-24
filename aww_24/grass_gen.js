@@ -6,7 +6,7 @@ AFRAME.registerComponent('terrain-grass-generator', {
         range: { type: 'number', default: 128 },
         bladeWidth: { type: 'number', default: 0.09 },
         minHeight: { type: 'number', default: 0.1 },
-        bladeHeight: { type: 'number', default: 2 },
+        bladeHeight: { type: 'number', default: 7 },
         windStrength: { type: 'number', default: 0.01 },
         windTurbulence: { type: 'number', default: 0.05 }
     },

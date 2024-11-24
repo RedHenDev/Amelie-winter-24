@@ -248,8 +248,9 @@ AFRAME.registerComponent('forest-system', {
             const height = this.data.minHeight + Math.random() * (this.data.maxHeight - this.data.minHeight);
             const radius = this.data.minRadius + Math.random() * (this.data.maxRadius - this.data.minRadius);
             
+            // -3 to prevent bole sticking out of terrain.
             const baseTransform = {
-                position: new THREE.Vector3(localX, y, localZ),
+                position: new THREE.Vector3(localX, y-3, localZ),
                 rotation: new THREE.Euler(
                     (Math.random() - 0.5) * 0.2,
                     Math.random() * Math.PI * 2,
