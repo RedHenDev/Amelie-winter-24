@@ -118,7 +118,7 @@ function getTerrainHeight(x, z) {
     // Large features (mountains and valleys)
     // Original values 0.5 and 24.
     // General spread multiplier attempt. Default 1.
-    const gSpread = 0.8;
+    const gSpread = 0.7;
     height += noise.noise(xCoord * 0.1 * gSpread, 0, zCoord * 0.1 * gSpread) * 64;  // Increased from 10.
     
     // Medium features (hills)

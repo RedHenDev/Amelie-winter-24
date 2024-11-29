@@ -87,7 +87,7 @@
                 <a-entity
 					id="reticle"
                     cursor="fuse:true;fuseTimeout:720;"
-                    raycaster="objects:.clickable; far:1000;"
+                    raycaster="objects:.clickable; far:32;"
                     geometry="primitive:ring;radiusInner: 0.01; radiusOuter: 0.03"
                     material="shader:flat;color:#077;
                                 depthTest:true;
@@ -100,30 +100,31 @@
         <a-sky  color="#00BBFF" >  </a-sky>
         <!-- Container entity that will rotate, creating day-night cycle -->
         <!-- set X value of 'to:' to 360 to work. -->
-            <a-entity id="blinky"></a-entity>
-            <!-- animation="property: rotation;
-                        dur: 4000;
+            <a-entity id="blinky"
+            animation="property: rotation;
+                        dur: 40000;
                         easing: linear;
                         loop: true;
-                        to: 0 0 0"  -->
+                        to: 360 0 0" >
                         
 
         <!-- Point light positioned away from the centre. -->
         <!-- color: #FDB800; -->
         <a-entity
         light="type: point;
-            color: #AAA;
+            color: #FDB800;
             intensity: 0.8;
             distance: 0;
             decay: 0;
             castShadow: true"
-        position="0 90 -127">
+        position="0 0 -127">
         <!-- Visual representation of the light source. -->
         <!-- <a-sphere radius="20" 
                 material="color: #FDB813; 
                             shader: flat;
                             ">
         </a-sphere> -->
+        </a-entity>
         </a-entity>
         <!-- Can place snow here, for example. -->
         </a-entity>
