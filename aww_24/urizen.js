@@ -220,9 +220,15 @@ AFRAME.registerComponent('terrain-generator', {
         //this.worldSeed = this.hashseed(worldName);
         this.generateChunk(-99,999);
         // Chunksize default 88.
-        this.chunkSize=201;
+        this.chunkSize=204;
         // Default number of chunks to gen in one go is 1, not 3.
-        this.chunksToGen=2;
+        this.chunksToGen=1;
+
+        // Move player slightly to trigger generation of surrounding
+        // terrain chunks.
+        // Didn't work.
+        // this.player.position.x = 2;
+        // this.player.position.z=2;
 
         // Texturing the terrain.
         // First create texture loader. I.e. via THREE.js.
@@ -314,12 +320,12 @@ AFRAME.registerComponent('terrain-generator', {
         this.chunks.set(`${chunkX},${chunkZ}`, chunk);
         //this.el.setAttribute('shadow');
 
-        // Emit custom event after chunk generation
+        // Emit custom event after chunk generation.
+        // Removed chunk itself as part of the detail (3rd item).
         const event = new CustomEvent('chunk-generated', {
             detail: { 
                 chunkX, 
-                chunkZ, 
-                chunk,
+                chunkZ,
                 offsetX,
                 offsetZ
             }
@@ -355,6 +361,7 @@ AFRAME.registerComponent('terrain-generator', {
                     Math.abs(z - chunkZ) > (this.chunksToGen+1)) {
                 this.el.object3D.remove(chunk);
                 this.chunks.delete(key);
+                //console.log('Chunks away!');
             }
         }
     }

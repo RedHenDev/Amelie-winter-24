@@ -9,6 +9,12 @@ attributions
 
 To Do & ideas
 
+-feature snomodillo to follow and talk with etc quest master
+
+-feature mobs from blockbench
+
+-bug Stop 'lag' at start due to loading of terrains immediately of moving
+
 -bug replace all instaces of 'player' with 'subject'
 
 -feature Direction indicators
@@ -17,7 +23,7 @@ To Do & ideas
 
 DONE -feature double sided canopy
 
--bug correct pitch when at zero?
+DONE -bug correct pitch when at zero?
 
 DONE -project organise projects: for Amelie; for DEV; collapse VR and basic into 1 proj
             (DEV), and think about how to maintain updated integration in modular way

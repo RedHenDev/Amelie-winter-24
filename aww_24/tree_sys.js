@@ -1,8 +1,8 @@
 AFRAME.registerComponent('forest-system', {
     // Schema remains the same
     schema: {
-        count: { type: 'number', default: 64 },
-        range: { type: 'number', default: 256 },
+        count: { type: 'number', default: 1 },
+        range: { type: 'number', default: 204 },
         minHeight: { type: 'number', default: 12 },
         maxHeight: { type: 'number', default: 25 },
         minRadius: { type: 'number', default: 0.4 },
