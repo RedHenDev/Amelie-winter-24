@@ -122,6 +122,7 @@ AFRAME.registerComponent('generate-hud', {
     playerEl.appendChild(hudEntity);
     // Begin hidden.
     hudEntity.object3D.visible=false;
+    hudEntity.object3D.position.y=999;
   }
 
 });

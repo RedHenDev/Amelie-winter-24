@@ -2,11 +2,11 @@ AFRAME.registerComponent('terrain-grass-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 128 },
-        range: { type: 'number', default: 204 },
-        bladeWidth: { type: 'number', default: 0.09 },
-        minHeight: { type: 'number', default: 0.1 },
-        bladeHeight: { type: 'number', default: 2 },
+        count: { type: 'number', default: 256 },
+        range: { type: 'number', default: 64 },
+        bladeWidth: { type: 'number', default: 0.13 },
+        minHeight: { type: 'number', default: 1 },
+        bladeHeight: { type: 'number', default: 1 },
         windStrength: { type: 'number', default: 0.01 },
         windTurbulence: { type: 'number', default: 0.05 }
     },
@@ -70,7 +70,7 @@ AFRAME.registerComponent('terrain-grass-generator', {
         
         grassEntity.setAttribute('grass-system', {
             count: this.data.count,
-            range: randomizedRange,
+            range: this.data.range,
             bladeWidth: this.data.bladeWidth,
             bladeHeight: this.data.bladeHeight,
             windStrength: 0.1,

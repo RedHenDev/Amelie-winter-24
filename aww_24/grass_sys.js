@@ -1,7 +1,7 @@
 AFRAME.registerComponent('grass-system', {
     schema: {
-        count: { type: 'number', default: 512 },
-        range: { type: 'number', default: 88 },
+        count: { type: 'number', default: 44 },
+        range: { type: 'number', default: 204 },
         bladeWidth: { type: 'number', default: 4 },
         minHeight: { type: 'number', default: 0.1 },
         bladeHeight: { type: 'number', default: 2 },
@@ -36,7 +36,7 @@ AFRAME.registerComponent('grass-system', {
         // Material for grass blades.
         const material = new THREE.MeshPhongMaterial({
             //color: 0x3b7f3b,
-            color: '#666',
+            color: '#0A0',
             side: THREE.DoubleSide,
             vertexColors: true
         });
