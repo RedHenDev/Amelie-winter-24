@@ -2,7 +2,7 @@ AFRAME.registerComponent('terrain-toadstool-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 777 },
+        count: { type: 'number', default: 12 },
         range: { type: 'number', default: 204 },
         minHeight: { type: 'number', default: 6 },
         maxHeight: { type: 'number', default: 10 },

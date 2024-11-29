@@ -112,7 +112,7 @@ function getTerrainHeight(x, z) {
     // Base terrain with multiple layers
     let height = 0;
 
-    const gSpread2 = 0.008;
+    const gSpread2 = 0.001;
     height += noise.noise(xCoord * 0.1 * gSpread2, 0, zCoord * 0.1 * gSpread2) * 2048;
     
     // Large features (mountains and valleys)

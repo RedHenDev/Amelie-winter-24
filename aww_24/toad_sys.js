@@ -26,8 +26,8 @@ AFRAME.registerComponent('toadstool-system', {
     createToadstool: function() {
         // First, let's see where we're attempting to place
         // our toad. Too low, no go.
-        let y = getTerrainHeight(this.position.x,this.position.z)-(0.5*this.data.scaleFactor);
-        if (y<13) return 1;
+        //let y = getTerrainHeight(this.position.x,this.position.z)-(0.5*this.data.scaleFactor);
+        
 
         const scaleFactor = this.data.scaleFactor;
         const height = THREE.MathUtils.randFloat(this.data.minHeight, this.data.maxHeight) * scaleFactor;
@@ -80,6 +80,7 @@ AFRAME.registerComponent('toadstool-system', {
         
         // Adjust y since we have decided new placement.
         y = getTerrainHeight(this.position.x+x,this.position.z+z)-(0.5*this.data.scaleFactor);
+        if (y<-13) return 1;
         toadstoolEntity.setAttribute('position', `${x} ${y} ${z}`);
         toadstoolEntity.setAttribute('rotation', `0 ${Math.random() * 360} ${tilt}`);
 
