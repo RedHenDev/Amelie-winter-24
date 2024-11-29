@@ -39,6 +39,9 @@
             <a-asset-item id="great-hall" src="great_hall.glb"></a-asset-item>
 
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
+
+            <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item>
+            <a-asset-item id="mArm" src="./assets/model.obj"></a-asset-item>
         
         </a-assets>
 
@@ -151,6 +154,11 @@
         <a-obj-model    src="#ent" scale="23 23 23" 
                         material="color: #088; opacity: 0.8; depthTest: true" 
                         position="440 12 -432"></a-obj-model>
+        
+        <!-- mobs! -->
+        <a-obj-model    src="#mArm" scale="23 23 23" 
+                        material="#iArm" color="#A0A" 
+                        position="0 12 -88"></a-obj-model>
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 

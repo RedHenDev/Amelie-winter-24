@@ -61,6 +61,8 @@ AFRAME.registerComponent('terrain-plant-generator', {
         if (this.grassInstances.has(key)) {
             return;
         }
+        // Don't make plants at starting position.
+        if ((chunkX==0 && chunkZ==0)) return;
 
         const grassEntity = document.createElement('a-entity');
         const randomizedRange = this.data.range + 
@@ -73,8 +75,8 @@ AFRAME.registerComponent('terrain-plant-generator', {
             range: randomizedRange,
             bladeWidth: this.data.bladeWidth,
             bladeHeight: this.data.bladeHeight,
-            windStrength: 0.1,
-            windTurbulence: 0.05
+            windStrength: 0.001,
+            windTurbulence: 0.005
         });
 
         const chunkSize = this.terrainGenerator.chunkSize;

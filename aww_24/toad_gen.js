@@ -2,8 +2,8 @@ AFRAME.registerComponent('terrain-toadstool-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 3 },
-        range: { type: 'number', default: 64 },
+        count: { type: 'number', default: 7 },
+        range: { type: 'number', default: 204 },
         minHeight: { type: 'number', default: 6 },
         maxHeight: { type: 'number', default: 10 },
         minRadius: { type: 'number', default: 4 },
@@ -74,7 +74,8 @@ AFRAME.registerComponent('terrain-toadstool-generator', {
         const chunkSize = this.terrainGenerator.chunkSize;
         const offsetX = chunkX * (chunkSize - 1);
         const offsetZ = chunkZ * (chunkSize - 1);
-        toadstoolEntity.object3D.position.set(offsetX, 0, offsetZ);
+        toadstoolEntity.object3D.position.set(  offsetX, 
+                                                0,offsetZ);
 
         toadstoolEntity.addEventListener('removeEntity', () => {
             this.removeToadstoolChunk(key, toadstoolEntity);

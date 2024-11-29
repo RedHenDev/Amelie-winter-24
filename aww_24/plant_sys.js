@@ -311,7 +311,7 @@ AFRAME.registerComponent('plant-system', {
     },
 
     tick: function(t, dt) {
-        return;
+        //return;
         this.time += dt * 0.001;
         const dummy = new THREE.Object3D();
 
