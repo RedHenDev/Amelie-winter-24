@@ -53,14 +53,19 @@ AFRAME.registerComponent('terrain-movement', {
         });
         document.addEventListener('keyup', (e) => {
             if (e.code === 'Space') {
-                this.hud.visible=!this.hud.visible;
+                this.hudToggle();
+            }
+        });
+    },
+
+    hudToggle: function(){
+        this.hud.visible=!this.hud.visible;
                 if (this.hud.visible){
                 this.hud.position.y=2;
                 this.hud.rotation.y=this.cam.rotation.y;
                 }
                 else this.hud.position.y=999;
-            }
-        });
+            
     },
 
     tick: function(time, delta) {
@@ -77,15 +82,12 @@ AFRAME.registerComponent('terrain-movement', {
             const roll=rotation.z;
 
         // Location of co-ords projected to a HUD.
-        // document.querySelector('#micro-hud-text').setAttribute(
-        //     'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
+        document.querySelector('#micro-hud-text').setAttribute(
+            'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
         
-            document.querySelector('#micro-hud-text').setAttribute(
-                'value',`${pitch}`);
+            // document.querySelector('#micro-hud-text').setAttribute(
+            //     'value',`${pitch}`);
             
-
-        
-
             // Let's try a toggle left.
             const minZ=0.3;  // Default 0.2.
 			const maxZ=0.5; // Default 0.4.
@@ -128,15 +130,10 @@ AFRAME.registerComponent('terrain-movement', {
             let cTime = Date.now();
             if (cTime-this.timeStamp > 2000){
                 this.timeStamp=Date.now();
-                this.hud.visible=!this.hud.visible;
-                // NB Hud buttons still respond if not visible.
-                // Note that the below pause() toggles itself :)
-                //document.querySelector("#hud").pause();
-                // Causes issue of detatching from player.
+                //this.hud.visible=!this.hud.visible;
+                this.hudToggle();
             }
         }
-
-        
 
         // Calculate movement direction.
         // Have negated sign of 1 here -- before, inverted movement bug.

@@ -51,6 +51,8 @@ AFRAME.registerComponent('terrain-forest-generator', {
 
     onChunkGenerated: function(event) {
         const { chunkX, chunkZ } = event.detail;
+        // Don't make trees at starting position.
+        if ((chunkX==0 && chunkZ==0)||chunkZ%2==0) return;
         this.generateGrassForChunk(chunkX, chunkZ);
     },
 

@@ -1,12 +1,13 @@
 AFRAME.registerComponent('plant-system', {
     schema: {
-        count: { type: 'number', default: 512 },
-        range: { type: 'number', default: 88 },
-        minHeight: { type: 'number', default: 0.5 },
-        maxHeight: { type: 'number', default: 2 },
-        windStrength: { type: 'number', default: 0.2 },
-        windTurbulence: { type: 'number', default: 0.05 },
-        flowerProbability: { type: 'number', default: 0.3 } // 30% chance of flowers
+        count: { type: 'number', default: 1 },
+        range: { type: 'number', default: 204 },
+        bladeWidth: { type: 'number', default: 0.9 },
+        minHeight: { type: 'number', default: 7 },
+        bladeHeight: { type: 'number', default: 70 },
+        windStrength: { type: 'number', default: 0 },
+        windTurbulence: { type: 'number', default: 0 },
+        flowerProbability: { type: 'number', default: 0 } // 30% chance of flowers
     },
 
     init: function() {
@@ -46,7 +47,7 @@ AFRAME.registerComponent('plant-system', {
         const createBlade = (baseX, baseY, baseZ, height, lean, rotation) => {
             const segments = 4;
             // 0.02 not 0.2.
-            const width = 0.2 + Math.random() * 0.2;
+            const width = 22 + Math.random() * 22;
             
             let prevLeft, prevRight; // Store previous points for proper segment joining
             
@@ -237,10 +238,10 @@ AFRAME.registerComponent('plant-system', {
             
             for (let i = 0; i < bladeCount; i++) {
                 const angle = (i / bladeCount) * Math.PI * 2 + Math.random() * 0.5;
-                const radius = 0.02 + Math.random() * 0.03;
+                const radius = 2 + Math.random() * 3;
                 const baseX = Math.cos(angle) * radius;
                 const baseZ = Math.sin(angle) * radius;
-                const height = 0.3 + Math.random() * 0.3;
+                const height = 128 + Math.random() * 128;
                 const lean = 0.05 + Math.random() * 0.05;
                 
                 createBlade(baseX, 0, baseZ, height, lean, angle);
@@ -310,6 +311,7 @@ AFRAME.registerComponent('plant-system', {
     },
 
     tick: function(t, dt) {
+        return;
         this.time += dt * 0.001;
         const dummy = new THREE.Object3D();
 
@@ -320,7 +322,8 @@ AFRAME.registerComponent('plant-system', {
             dummy.rotation.copy(transform.rotation);
             dummy.scale.copy(transform.scale);
 
-            // Enhanced wind simulation
+            // Enhanced wind simulation.
+            // Default 2.
             const windFrequency = 2;
             const xOffset = transform.position.x * 0.1;
             const zOffset = transform.position.z * 0.1;
@@ -354,6 +357,7 @@ AFRAME.registerComponent('plant-system', {
     }
 });
 
+/*
 AFRAME.registerComponent('plant-system-simple', {
     schema: {
         count: { type: 'number', default: 512 },

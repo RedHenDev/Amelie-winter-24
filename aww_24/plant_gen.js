@@ -2,13 +2,13 @@ AFRAME.registerComponent('terrain-plant-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 128 },
-        range: { type: 'number', default: 128 },
-        bladeWidth: { type: 'number', default: 0.09 },
-        minHeight: { type: 'number', default: 0.7 },
-        bladeHeight: { type: 'number', default: 7 },
-        windStrength: { type: 'number', default: 0.1 },
-        windTurbulence: { type: 'number', default: 0.05 }
+        count: { type: 'number', default: 3 },
+        range: { type: 'number', default: 204 },
+        bladeWidth: { type: 'number', default: 0.9 },
+        minHeight: { type: 'number', default: 7 },
+        bladeHeight: { type: 'number', default: 70 },
+        windStrength: { type: 'number', default: 0.001 },
+        windTurbulence: { type: 'number', default: 0.00 }
     },
 
     init: function() {

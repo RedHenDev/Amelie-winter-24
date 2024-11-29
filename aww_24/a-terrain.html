@@ -14,6 +14,8 @@
     <script src="tree_gen.js"></script>
     <script src="plant_sys.js"></script>
     <script src="tree_sys.js"></script>
+    <script src="toad_sys.js"></script>
+    <script src="toad_gen.js"></script>
 
     <!-- Snow system. -->
     <script src="snow_sys.js"></script>
@@ -127,7 +129,9 @@
         </a-entity> 
 
         <!-- Snee! -->
-        <a-entity id='klaus' snow-system="count: 90000; range: 40; height: 40"></a-entity>
+        <a-entity id='klaus' snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
+        <a-entity id='jack' snow-system="count: 900; range: 40; height: 40; snowing: true"></a-entity>
+
 
         <!-- Experimental nonsense. Hi mum! -->
         <script defer src="glow-spheres.js"></script>
@@ -138,7 +142,7 @@
         <a-entity   terrain-generator 
                     terrain-grass-generator 
                     terrain-plant-generator
-                    terrain-forest-generator
+                    terrain-toadstool-generator
         ></a-entity>
 
         <!-- Here is where we load in obj models -->
