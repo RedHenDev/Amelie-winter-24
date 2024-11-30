@@ -6,7 +6,9 @@ function autoGalleryGo() {
 
     console.log('auto img complete...' + ' ' + imageFiles.length + ' files built.');
     
+    let i=-1;
     imageFiles.forEach(file => {
+        i++;
         const img = document.createElement('img');
         img.id = file.split('.')[0];
         img.src = file;
@@ -18,10 +20,10 @@ function autoGalleryGo() {
         // Create giant 'gallery' planes for the images.
         const plane = document.createElement('a-plane');
         plane.setAttribute('src', `#${img.id}`);
-        plane.setAttribute('position', `${Math.random() * 30 - 15} 
-                                        ${Math.random() * 100 + 10}
-                                        ${Math.random() * 30 - 15}`);
-        plane.setAttribute('rotation', `0 ${Math.random() * 359} 0`);
+        plane.setAttribute('position', `${20*Math.sin((Math.PI / 180)*(360/imageFiles.length*i))} 
+                                        ${20}
+                                        ${20*Math.cos((Math.PI / 180)*(360/imageFiles.length*i))}`);
+        plane.setAttribute('rotation', `0 ${360/imageFiles.length*i} 0`);
         plane.setAttribute('width', '10');
         plane.setAttribute('height', '10');
         plane.setAttribute('material', 'side: double');
