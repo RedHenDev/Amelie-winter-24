@@ -7,6 +7,9 @@ AFRAME.registerComponent('terrain-movement', {
     init: function() {
         this.velocity = new THREE.Vector3();
         this.targetY = 0;
+
+        // Experiment. Monty the armadillo.
+        this.monty=document.querySelector("#monty").object3D;
         
         this.fov=80;
         this.cam=document.querySelector("#cam").object3D;
@@ -72,9 +75,17 @@ AFRAME.registerComponent('terrain-movement', {
         
         if (!delta) return;
         delta = delta * 0.001; // Convert to seconds.
-        
+
         const position = this.rig.position;
         const rotation = this.cam.rotation;
+
+
+        // Experiment. Can we move the armadillo?
+        const mx = this.monty.position.x;
+        const mz = this.monty.position.z;
+        const my=getTerrainHeight(mx,mz);
+        this.monty.position.y=my;
+        this.monty.position.z-=0.1;
 
         const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
         questManager.checkLocation(position.x, position.y, position.z);

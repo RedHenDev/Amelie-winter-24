@@ -2,13 +2,12 @@ AFRAME.registerComponent('terrain-forest-generator', {
     dependencies: ['terrain-generator'],
 
     schema: {
-        count: { type: 'number', default: 3 },
+        count: { type: 'number', default: 32 },
         range: { type: 'number', default: 64 },
-        minHeight: { type: 'number', default: 12 },
-        maxHeight: { type: 'number', default: 18 },
-        minRadius: { type: 'number', default: 8 },
-        maxRadius: { type: 'number', default: 12 },
-        canopySize: { type: 'number', default: 18 }
+        minHeight: { type: 'number', default: 4 },
+        maxHeight: { type: 'number', default: 22 },
+        windStrength: { type: 'number', default: 0 },
+        windTurbulence: { type: 'number', default: 0 }
     },
 
     init: function() {
@@ -69,15 +68,14 @@ AFRAME.registerComponent('terrain-forest-generator', {
             (Math.random() * 2) - this.data.range * 0.5;
         
         //grassEntity.setAttribute('plant-system', {
-        //console.log('planting forest');
-        grassEntity.setAttribute('forest-system', {
+        console.log('planting forest');
+        grassEntity.setAttribute('tree-system', {
             count: this.data.count,
             range: this.data.range,
             minHeight: this.data.minHeight,
             maxHeight: this.data.maxHeight,
-            minRadius: this.data.minRadius,
-            maxRadius: this.data.maxRadius,
-            canopySize: this.data.canopySize
+            windStrength: this.data.windStrength,
+            windTurbulence: this.data.windTurbulence
         });
 
         const chunkSize = this.terrainGenerator.chunkSize;

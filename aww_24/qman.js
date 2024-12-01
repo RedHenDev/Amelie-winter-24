@@ -44,7 +44,7 @@ AFRAME.registerComponent('quest-manager', {
 
     loadQuests: async function(filePath) {
         try {
-            const response = await fetch(filePath);
+            const response = await fetch(`./${filePath}`);
             const text = await response.text();
             this.parseQuestFile(text);
         } catch (error) {
@@ -214,10 +214,10 @@ AFRAME.registerComponent('quest-markers', {
         for (const [id, quest] of quests) {
             console.log(`Creating marker for quest ${id} at ${quest.x}, ${quest.y}, ${quest.z}`);
             
-            // Create the orb
+            // Create the orb.
             const orb = document.createElement('a-entity');
             
-            // Inner sphere
+            // Inner sphere.
             const innerSphere = document.createElement('a-sphere');
             innerSphere.setAttribute('radius', '2');
             innerSphere.setAttribute('material', {

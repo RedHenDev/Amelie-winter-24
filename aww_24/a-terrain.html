@@ -11,12 +11,13 @@
     <!-- Fields of grass... -->
     <script src="grass_sys.js"></script>
     <script src="grass_gen.js"></script>
-    <script src="plant_gen.js"></script>
-    <!-- <script src="tree_gen.js"></script> -->
-    <script src="plant_sys.js"></script>
-    <!-- <script src="tree_sys.js"></script> -->
+    <!-- <script src="plant_gen.js"></script> -->
+    <script src="tree_gen.js"></script>
+    <!-- <script src="plant_sys.js"></script> -->
+    <script src="tree_sys.js"></script>
     <script src="toad_sys.js"></script>
     <script src="toad_gen.js"></script>
+    <!-- <script src="a-trees.js"></script> -->
 
     <!-- Snow system. -->
     <script src="snow_sys.js"></script>
@@ -30,7 +31,7 @@
 
     <script src="thalassa.js"></script>
 
-        <script src="auto_gallery.js"></script>
+        <!-- <script src="auto_gallery.js"></script> -->
 
         <!-- preloading assets -->
         <a-assets>
@@ -146,8 +147,9 @@
         <!-- Terrain -->
         <a-entity   terrain-generator 
                     terrain-grass-generator 
-                    
                     terrain-toadstool-generator
+                    terrain-forest-generator
+                    terrain-plant-generator
         ></a-entity>
 
         <!-- Quest system -->
@@ -161,9 +163,10 @@
                         position="440 12 -432"></a-obj-model>
         
         <!-- mobs! -->
-        <a-obj-model    src="#mArm" scale="23 23 23" 
-                        material="#iArm" color="#A0A" 
-                        position="0 12 -88"></a-obj-model>
+        <a-obj-model    id="monty"
+                        src="#mArm" scale="3 3 3" 
+                        material="#iArm" color="#D0A" 
+                        position="0 12 -18"></a-obj-model>
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 
