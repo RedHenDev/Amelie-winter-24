@@ -69,12 +69,16 @@ AFRAME.registerComponent('terrain-movement', {
     },
 
     tick: function(time, delta) {
+        
         if (!delta) return;
-
         delta = delta * 0.001; // Convert to seconds.
         
         const position = this.rig.position;
         const rotation = this.cam.rotation;
+
+        const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
+        questManager.checkLocation(position.x, position.y, position.z);
+        questManager.checkPickup(position.x, position.y, position.z);
 
         // Camera controls testing, for VR (and mobile).
         //if(AFRAME.utils.device.isMobile()){

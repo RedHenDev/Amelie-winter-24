@@ -19,10 +19,11 @@ function autoGalleryGo() {
 
         // Create giant 'gallery' planes for the images.
         const plane = document.createElement('a-plane');
+        const radCon = Math.PI/180;
         plane.setAttribute('src', `#${img.id}`);
-        plane.setAttribute('position', `${20*Math.sin((Math.PI / 180)*(360/imageFiles.length*i))} 
-                                        ${20}
-                                        ${20*Math.cos((Math.PI / 180)*(360/imageFiles.length*i))}`);
+        plane.setAttribute('position', `${2.5*Math.sin((radCon)*(360/imageFiles.length*i))} 
+                                        ${12}
+                                        ${2.5*Math.cos((radCon)*(360/imageFiles.length*i))}`);
         plane.setAttribute('rotation', `0 ${360/imageFiles.length*i} 0`);
         plane.setAttribute('width', '10');
         plane.setAttribute('height', '10');

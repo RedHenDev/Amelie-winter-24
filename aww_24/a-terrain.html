@@ -7,6 +7,7 @@
 
     <!-- For terrain generation using procedural noise.-->
     <script src="urizen.js"></script>
+    
     <!-- Fields of grass... -->
     <script src="grass_sys.js"></script>
     <script src="grass_gen.js"></script>
@@ -149,6 +150,9 @@
                     terrain-toadstool-generator
         ></a-entity>
 
+        <!-- Quest system -->
+        <a-entity quest-manager="questFile: quests.txt"></a-entity>
+
         <!-- Here is where we load in obj models -->
 
         <!-- Magical crystal Christmas tree. -->
@@ -199,14 +203,15 @@
 
         <!-- Lighting -->
         <a-light type="ambient" color="#888"></a-light> 
-        <!-- <a-light id="blinky" type="directional" position="1 1 1" color="#FFF" intensity="1"></a-light> -->
-
+        <a-light id="blinky" type="directional" position="1 1 1" color="#FFF" intensity="1"></a-light>
     </a-scene>
 
     <!-- HUD interactions for settings. NB before a-loco. -->
     <script src="HUD_menu.js"></script>
     <!-- Locomotion of player. -->
     <script src='a-loco.js'></script>
+    <script src="qman.js"></script>
+    <!-- <script src="n_urizen.js"></script> -->
 
 </body>
 </html>

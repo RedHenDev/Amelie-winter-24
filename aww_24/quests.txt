@@ -1,0 +1,35 @@
+[Quest]
+id=1
+type=item
+x=100
+y=10
+z=200
+itemType=crystal
+message=You found the crystal!
+prerequisite=-1
+visible=true
+completed=false
+
+[Quest]
+id=2
+type=location
+x=500
+y=20
+z=-300
+itemType=none
+message=You discovered the ancient ruins!
+prerequisite=1
+visible=true
+completed=false
+
+[Quest]
+id=3
+type=item
+x=250
+y=15
+z=400
+itemType=key
+message=You found the mysterious key!
+prerequisite=2
+visible=true
+completed=false
