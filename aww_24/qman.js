@@ -242,11 +242,13 @@ AFRAME.registerComponent('quest-markers', {
             // *** Fancy...
             // Add text label
             const label = document.createElement('a-text');
-            label.setAttribute('value', quest.type === 'item' ? 'Item Quest' : 'Location Quest');
+            //label.setAttribute('value', quest.type === 'item' ? 'Item Quest' : 'Location Quest');
+            label.setAttribute('value', quest.message);
             label.setAttribute('align', 'center');
-            label.setAttribute('position', '0 1.5 0');
-            label.setAttribute('scale', '2 2 2');
-            label.setAttribute('look-at', '[camera]');
+            label.setAttribute('color','#000');
+            label.setAttribute('position', '0 3 0');
+            label.setAttribute('scale', '4 4 4');
+            //label.setAttribute('look-at', '[camera]');
             orb.appendChild(label);
 
             // Add animation to outer sphere
