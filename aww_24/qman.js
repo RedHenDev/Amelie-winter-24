@@ -182,19 +182,44 @@ AFRAME.registerComponent('quest-manager', {
 // }
 
 // Autogenesis, y'all.
+setTimeout(autoGenMarkers, 5000);
+function autoGenMarkers(){
 const qmarkEnt = document.createElement('a-entity');
 qmarkEnt.setAttribute('quest-markers', '');
 document.querySelector('a-scene').appendChild(qmarkEnt);
+}
 AFRAME.registerComponent('quest-markers', {
     init: function() {
-        console.log('Quest markers initializing');
-        this.questManager = document.querySelector('[quest-manager]').components['quest-manager'];
-        this.markers = new Map(); // Track existing markers
+        //console.log('Quest markers initializing');
+
+        this.markers = new Map(); // Track existing markers.
+
+        // Wait for quest manager to be ready
+        const checkQuestManager = () => {
+            const questManager = document.querySelector('[quest-manager]');
+            if (questManager && questManager.components['quest-manager'].quests) {
+                console.log('Quest manager ready, creating markers');
+                this.questManager = questManager.components['quest-manager'];
+                this.createMarkers();
+                this.markers = new Map(); // Track existing markers.
+            } else {
+                console.log('Quest manager not ready, retrying...');
+                setTimeout(checkQuestManager, 1000);
+            }
+        };
+        
+        checkQuestManager();
+
+
+
+
+        //this.questManager = document.querySelector('[quest-manager]').components['quest-manager'];
+        
         
         // Wait briefly for quests to load
-        setTimeout(() => {
-            this.createMarkers();
-        }, 1000);
+        // setTimeout(() => {
+        //     this.createMarkers();
+        // }, 1000);
     },
 
     createMarkers: function() {
@@ -220,7 +245,7 @@ AFRAME.registerComponent('quest-markers', {
             
             // Inner sphere.
             const innerSphere = document.createElement('a-sphere');
-            //innerSphere.setAttribute('radius', '2');
+            innerSphere.setAttribute('radius', '2');
             innerSphere.setAttribute('material', {
                 shader: 'standard',
                 emissive: quest.type === 'item' ? '#00ff00' : '#0088ff',
@@ -231,7 +256,7 @@ AFRAME.registerComponent('quest-markers', {
             
             // Outer glow sphere
             const outerSphere = document.createElement('a-sphere');
-            //outerSphere.setAttribute('radius', '3');
+            outerSphere.setAttribute('radius', '3');
             outerSphere.setAttribute('material', {
                 shader: 'standard',
                 emissive: quest.type === 'item' ? '#00ff00' : '#0088ff',
@@ -289,6 +314,7 @@ AFRAME.registerComponent('quest-markers', {
 
     clearAllMarkers: function() {
         // Remove all existing markers
+        if (!this.markers) return;
         for (const marker of this.markers.values()) {
             if (marker.parentNode) {
                 marker.parentNode.removeChild(marker);

@@ -104,7 +104,7 @@ AFRAME.registerComponent('terrain-movement', {
         //document.querySelector('#micro-hud-text').setAttribute(
           //  'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
         document.querySelector('#micro-hud-text').setAttribute(
-            'value',`${this.questManager.quests.size} quests loaded`);
+            'value',`${Math.floor(rotation.y)} `);
             
 
             // document.querySelector('#micro-hud-text').setAttribute(
