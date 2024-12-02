@@ -82,6 +82,7 @@ AFRAME.registerComponent('quest-manager', {
         }
 
         console.log(`Loaded ${this.quests.size} quests`);
+        if (this.quests.size>0)autoGenMarkers();
     },
 
     // Get all currently visible and ready quests
@@ -182,7 +183,7 @@ AFRAME.registerComponent('quest-manager', {
 // }
 
 // Autogenesis, y'all.
-setTimeout(autoGenMarkers, 5000);
+//setTimeout(autoGenMarkers, 5000);
 function autoGenMarkers(){
 const qmarkEnt = document.createElement('a-entity');
 qmarkEnt.setAttribute('quest-markers', '');
