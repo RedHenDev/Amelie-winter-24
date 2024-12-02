@@ -10,6 +10,10 @@ AFRAME.registerComponent('terrain-movement', {
 
         // Experiment. Monty the armadillo.
         this.monty=document.querySelector("#monty").object3D;
+
+        // Quest management.
+        this.questManager=
+        document.querySelector('[quest-manager]').components['quest-manager'];
         
         this.fov=80;
         this.cam=document.querySelector("#cam").object3D;
@@ -87,9 +91,9 @@ AFRAME.registerComponent('terrain-movement', {
         this.monty.position.y=my;
         this.monty.position.z-=0.1;
 
-        const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
-        questManager.checkLocation(position.x, position.y, position.z);
-        questManager.checkPickup(position.x, position.y, position.z);
+        //const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
+        this.questManager.checkLocation(position.x, position.y, position.z);
+        this.questManager.checkPickup(position.x, position.y, position.z);
 
         // Camera controls testing, for VR (and mobile).
         //if(AFRAME.utils.device.isMobile()){
@@ -97,9 +101,12 @@ AFRAME.registerComponent('terrain-movement', {
             const roll=rotation.z;
 
         // Location of co-ords projected to a HUD.
+        //document.querySelector('#micro-hud-text').setAttribute(
+          //  'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
         document.querySelector('#micro-hud-text').setAttribute(
-            'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
-        
+            'value',`${this.questManager.quests.size} quests loaded`);
+            
+
             // document.querySelector('#micro-hud-text').setAttribute(
             //     'value',`${pitch}`);
             

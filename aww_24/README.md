@@ -9,17 +9,19 @@ attributions
 
 To Do & ideas
 
+-feature ai dedicated movement component (rather than spaghetti in a-loco)
+
 -feature snomodillo to follow and talk with etc quest master
 
--feature mobs from blockbench
+DONE -feature mobs from blockbench
 
 -bug Stop 'lag' at start due to loading of terrains immediately of moving
 
--bug replace all instaces of 'player' with 'subject'
+-feature replace all instaces of 'player' with 'subject'
 
 -feature Direction indicators
 
--bug correct tree trunks
+DONE -bug correct tree trunks
 
 DONE -feature double sided canopy
 
@@ -32,7 +34,7 @@ DONE -project organise projects: for Amelie; for DEV; collapse VR and basic into
 
 -bug are grass, plant, and forest chunks being removed correctly?
 
--bug-feature have HUD face player
+DONE -bug-feature have HUD face player
 
 -feature 'game' manager, so that particular features only appear for particular
             world seeds or by some other determinant.
@@ -47,6 +49,8 @@ DONE -project organise projects: for Amelie; for DEV; collapse VR and basic into
 -feature story system
 
 -feature quest system (against the clock adventures?)
+
+-bug quest system v1 not working on mobile?
 
 -feature ambient sound
 

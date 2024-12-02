@@ -210,6 +210,7 @@ AFRAME.registerComponent('quest-markers', {
         // Get all active quests
         const quests = this.questManager.getActiveQuests();
         console.log(`Found ${quests.size} quests to mark`);
+        
 
         for (const [id, quest] of quests) {
             console.log(`Creating marker for quest ${id} at ${quest.x}, ${quest.y}, ${quest.z}`);
