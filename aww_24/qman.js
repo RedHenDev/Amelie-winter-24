@@ -220,7 +220,7 @@ AFRAME.registerComponent('quest-markers', {
             
             // Inner sphere.
             const innerSphere = document.createElement('a-sphere');
-            innerSphere.setAttribute('radius', '2');
+            //innerSphere.setAttribute('radius', '2');
             innerSphere.setAttribute('material', {
                 shader: 'standard',
                 emissive: quest.type === 'item' ? '#00ff00' : '#0088ff',
@@ -231,7 +231,7 @@ AFRAME.registerComponent('quest-markers', {
             
             // Outer glow sphere
             const outerSphere = document.createElement('a-sphere');
-            outerSphere.setAttribute('radius', '3');
+            //outerSphere.setAttribute('radius', '3');
             outerSphere.setAttribute('material', {
                 shader: 'standard',
                 emissive: quest.type === 'item' ? '#00ff00' : '#0088ff',
