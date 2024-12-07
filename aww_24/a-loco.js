@@ -94,10 +94,10 @@ AFRAME.registerComponent('terrain-movement', {
             const roll=rotation.z;
 
         // Location of co-ords projected to a HUD.
-        //document.querySelector('#micro-hud-text').setAttribute(
-          //  'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
         document.querySelector('#micro-hud-text').setAttribute(
-            'value',`${Math.floor(rotation.y)} `);
+            'value',`${Math.floor(position.x)} ${Math.floor(position.y)} ${Math.floor(position.z)}`);
+        // document.querySelector('#micro-hud-text').setAttribute(
+        //     'value',`${Math.floor(rotation.y)} `);
             
 
             // document.querySelector('#micro-hud-text').setAttribute(
@@ -223,7 +223,7 @@ AFRAME.registerComponent('terrain-movement', {
             if (!this.jumping){
                 position.y -= this.presentJumpSpeed;
                 // Moony = 1.01 Earthy = 1.1
-                this.presentJumpSpeed *= 1.02;
+                this.presentJumpSpeed *= 1.1;
             }
             else if (this.jumping && this.moveZ==1){
                 position.y += this.presentJumpSpeed;

@@ -1,11 +1,11 @@
 [Quest]
 id=1
 type=item
-x=100
-y=10
-z=200
+x=88
+y=-22
+z=64
 itemType=crystal
-message=You found the crystal!
+message=Snow Quest: \nFirst, look for the\n Great Tannenbaum!
 prerequisite=-1
 visible=true
 completed=false
@@ -14,22 +14,22 @@ completed=false
 id=2
 type=location
 x=500
-y=20
+y=3
 z=-300
 itemType=none
-message=You discovered the ancient ruins!
-prerequisite=1
+message=You'll find the ancient ruins\n beyond the Great Tannenbaum.
+prerequisite=-1
 visible=true
 completed=false
 
 [Quest]
 id=3
 type=item
-x=250
-y=15
-z=400
+x=80
+y=12
+z=-600
 itemType=key
-message=You found the mysterious key!
-prerequisite=2
+message=The ancient ruins are ahead!\nThe gift of snow is said to lie within./nGood luck!
+prerequisite=-1
 visible=true
 completed=false

@@ -165,7 +165,7 @@
         <!-- Magical crystal Christmas tree. -->
         <a-obj-model    src="#ent" scale="23 23 23" 
                         material="color: #088; opacity: 0.8; depthTest: true" 
-                        position="440 12 -432"></a-obj-model>
+                        position="440 -32 -432"></a-obj-model>
         
         <!-- mobs! -->
         <a-obj-model    id="monty"
@@ -219,19 +219,22 @@
                 document.querySelector("#petite-hall").setAttribute
                     ('position',`88 ${hallHeight} 64`); 
         </script>
+        <a-entity   sphere-generator="interval: 50; maxSpheres: 320; 
+                                        maxRadius: 0.4" 
+                    position="88 0 64"></a-entity>
 
         <a-entity gltf-model="#great-hall"
                     position ="0 332 -1488" 
                     scale="62 62 62"
-                    rotation="0 63 0"></a-entity>
+                    rotation="0 0 0"></a-entity>
         
         <!-- <a-entity gltf-model="#hogz"
                     position ="0 0.453 4" 
                     scale="1 1 1"></a-entity> -->
 
         <!-- Lighting -->
-        <a-light type="ambient" color="#888"></a-light> 
-        <a-light id="blinky" type="directional" position="1 1 1" color="#FFF" intensity="1"></a-light>
+        <a-light type="ambient" color="#888" intensity="0.6"></a-light> 
+        <!-- <a-light id="blinkyAmb" type="directional" position="1 1 1" color="#FFF" intensity="1"></a-light> -->
     </a-scene>
 
     <!-- HUD interactions for settings. NB before a-loco. -->
