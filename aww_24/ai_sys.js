@@ -1,6 +1,6 @@
 AFRAME.registerComponent('ai-locomotion', {
     schema: {
-        speed: {type: 'number', default: 0.3},
+        speed: {type: 'number', default: 0.6},
     },
 
     init: function() {
@@ -13,15 +13,18 @@ AFRAME.registerComponent('ai-locomotion', {
         delta = delta * 0.001; // Convert to seconds.
         
         // Experiment. Can we move the armadillo?
+        const radCon = Math.PI / 180;
+        
         const mx = this.rig.position.x;
         const mz = this.rig.position.z;
         const my = getTerrainHeight(mx,mz);
-        this.rig.position.y = my+0.6;
-        this.rig.position.z -= this.data.speed * delta;
+        this.rig.position.y = my+0.9;
+        this.rig.position.x -= Math.sin(this.rig.rotation.y)*this.data.speed * delta;
+        this.rig.position.z -= Math.cos(this.rig.rotation.y)*this.data.speed * delta;
 
         // Wiggle?
-        const radCon = Math.PI / 180;
-        this.rig.rotation.z = Math.sin(radCon*this.rig.position.z*10) * 2;
+        this.rig.rotation.z = Math.sin((Math.abs(this.rig.position.z) + 
+                            Math.abs(this.rig.position.x)) *8) * 0.16;
 
     }
 });

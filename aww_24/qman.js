@@ -23,6 +23,9 @@ class QuestItem {
     }
 }
 
+
+
+
 // Quest management component
 AFRAME.registerComponent('quest-manager', {
     schema: {
@@ -267,7 +270,7 @@ AFRAME.registerComponent('quest-markers', {
             label.setAttribute('color', '#000');
             label.setAttribute('position', '0 3 0');
             label.setAttribute('scale', '4 4 4');
-            label.setAttribute('rotation', '0 90 0');
+            label.setAttribute('rotation', '0 0 0');
             orb.appendChild(label);
 
             // Animations
@@ -295,6 +298,9 @@ AFRAME.registerComponent('quest-markers', {
             // Assemble orb
             orb.appendChild(innerSphere);
             orb.appendChild(outerSphere);
+            
+            // Look at subject...
+            orb.setAttribute('look-at','targetID:#player');
             
             // Add to scene and track
             this.el.sceneEl.appendChild(orb);

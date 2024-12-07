@@ -7,6 +7,9 @@
 
     <!-- For terrain generation using procedural noise.-->
     <script src="urizen.js"></script>
+
+    <!-- For scripts wanting to add a look-at behaviour. -->
+    <script src="look_at.js"></script>
     
     <!-- Fields of grass... -->
     <script src="grass_sys.js"></script>
@@ -169,7 +172,9 @@
                         src="#mArm" scale="3 3 3" 
                         material="#iArm" color="#D0A" 
                         position="0 12 -18"
-                        ai-locomotion>
+                        ai-locomotion
+                        look-at="targetID:#player; rSpeed:0.6"
+                        >
         </a-obj-model>
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
