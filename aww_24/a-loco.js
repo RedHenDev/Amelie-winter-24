@@ -83,14 +83,7 @@ AFRAME.registerComponent('terrain-movement', {
         const position = this.rig.position;
         const rotation = this.cam.rotation;
 
-
-        // Experiment. Can we move the armadillo?
-        const mx = this.monty.position.x;
-        const mz = this.monty.position.z;
-        const my=getTerrainHeight(mx,mz);
-        this.monty.position.y=my;
-        this.monty.position.z-=0.1;
-
+        // Quest updates. Should be handled by quest module, not here.
         //const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
         this.questManager.checkLocation(position.x, position.y, position.z);
         this.questManager.checkPickup(position.x, position.y, position.z);
@@ -225,7 +218,7 @@ AFRAME.registerComponent('terrain-movement', {
         if (this.flying){
             // Pitch can affect y position...for flight :D
             //position.y += pitch*0.06 * Math.abs(this.velocity.z+this.velocity.x);
-            position.y += pitch*0.4*this.moveZ;
+            position.y += pitch*0.8*this.moveZ;
         } else if (this.lunaBounce) {
             if (!this.jumping){
                 position.y -= this.presentJumpSpeed;

@@ -92,6 +92,7 @@ AFRAME.registerComponent('sphere-generator', {
 
     tick: function(time, delta) {
         this.time += delta;
+        const ds = delta * 0.001; // Converts delta to seconds.
 
         // Create new sphere if interval has passed and under max
         if (this.time > this.data.interval && this.spheres.length < this.data.maxSpheres) {
@@ -102,7 +103,7 @@ AFRAME.registerComponent('sphere-generator', {
         // Update spheres
         for (let i = this.spheres.length - 1; i >= 0; i--) {
             const sphere = this.spheres[i];
-            sphere.life -= delta / 1000;
+            sphere.life -= ds;
 
             if (sphere.life <= 0) {
                 // Remove sphere
@@ -111,8 +112,8 @@ AFRAME.registerComponent('sphere-generator', {
             } else {
                 // Update position
                 const velocity = sphere.mesh.userData.velocity;
-                sphere.mesh.position.add(velocity.clone().multiplyScalar(delta / 1000));
-                velocity.y -= 9.8 * delta / 1000; // Simple gravity
+                sphere.mesh.position.add(velocity.clone().multiplyScalar(ds));
+                velocity.y -= 9.8 * ds; // Simple gravity
             }
         }
     }

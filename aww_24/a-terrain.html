@@ -19,6 +19,8 @@
     <script src="toad_gen.js"></script>
     <!-- <script src="a-trees.js"></script> -->
 
+    <script src="ai_sys.js"></script>
+
     <!-- Snow system. -->
     <script src="snow_sys.js"></script>
 
@@ -166,7 +168,9 @@
         <a-obj-model    id="monty"
                         src="#mArm" scale="3 3 3" 
                         material="#iArm" color="#D0A" 
-                        position="0 12 -18"></a-obj-model>
+                        position="0 12 -18"
+                        ai-locomotion>
+        </a-obj-model>
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 

@@ -82,7 +82,7 @@ AFRAME.registerComponent('quest-manager', {
         }
 
         console.log(`Loaded ${this.quests.size} quests`);
-        if (this.quests.size>0)autoGenMarkers();
+        if (this.quests.size>0) autoGenMarkers();
     },
 
     // Get all currently visible and ready quests
@@ -126,9 +126,15 @@ AFRAME.registerComponent('quest-manager', {
             }
             this.el.emit('quest-completed', { questId: questId });
             console.log(`Completed quest ${questId}: ${quest.message}`);
-            // Make sure markers now visible. ***
-            const qms = document.querySelector('[quest-markers]').components['quest-markers'];
-            qms.createMarkers();
+            
+            // Add small delay to ensure quest state is updated before refreshing markers
+            setTimeout(() => {
+                const qms = document.querySelector('[quest-markers]');
+                if (qms && qms.components['quest-markers']) {
+                    console.log('Updating markers after quest completion');
+                    qms.components['quest-markers'].refreshMarkers();
+                }
+            }, 100);
         }
     },
 
@@ -176,33 +182,23 @@ AFRAME.registerComponent('quest-manager', {
     }
 });
 
-//  // When collecting items.
-// function collectItem(itemType) {
-//     const questManager = document.querySelector('[quest-manager]').components['quest-manager'];
-//     questManager.checkItem(itemType);
-// }
-
-// Autogenesis, y'all.
-//setTimeout(autoGenMarkers, 5000);
-function autoGenMarkers(){
-const qmarkEnt = document.createElement('a-entity');
-qmarkEnt.setAttribute('quest-markers', '');
-document.querySelector('a-scene').appendChild(qmarkEnt);
+function autoGenMarkers() {
+    const qmarkEnt = document.createElement('a-entity');
+    qmarkEnt.setAttribute('quest-markers', '');
+    document.querySelector('a-scene').appendChild(qmarkEnt);
 }
+
 AFRAME.registerComponent('quest-markers', {
     init: function() {
-        //console.log('Quest markers initializing');
+        this.markers = new Map();
+        this.player = document.querySelector('#player').object3D;
 
-        this.markers = new Map(); // Track existing markers.
-
-        // Wait for quest manager to be ready
         const checkQuestManager = () => {
             const questManager = document.querySelector('[quest-manager]');
             if (questManager && questManager.components['quest-manager'].quests) {
                 console.log('Quest manager ready, creating markers');
                 this.questManager = questManager.components['quest-manager'];
                 this.createMarkers();
-                this.markers = new Map(); // Track existing markers.
             } else {
                 console.log('Quest manager not ready, retrying...');
                 setTimeout(checkQuestManager, 1000);
@@ -210,17 +206,12 @@ AFRAME.registerComponent('quest-markers', {
         };
         
         checkQuestManager();
+    },
 
-
-
-
-        //this.questManager = document.querySelector('[quest-manager]').components['quest-manager'];
-        
-        
-        // Wait briefly for quests to load
-        // setTimeout(() => {
-        //     this.createMarkers();
-        // }, 1000);
+    refreshMarkers: function() {
+        console.log('Refreshing markers');
+        this.clearAllMarkers();
+        this.createMarkers();
     },
 
     createMarkers: function() {
@@ -230,21 +221,24 @@ AFRAME.registerComponent('quest-markers', {
             return;
         }
 
-        // First, remove all existing markers
+        // First, ensure proper cleanup
         this.clearAllMarkers();
 
         // Get all active quests
         const quests = this.questManager.getActiveQuests();
         console.log(`Found ${quests.size} quests to mark`);
-        
 
         for (const [id, quest] of quests) {
+            if (quest.completed) {
+                console.log(`Skipping completed quest ${id}`);
+                continue;
+            }
+
             console.log(`Creating marker for quest ${id} at ${quest.x}, ${quest.y}, ${quest.z}`);
             
-            // Create the orb.
             const orb = document.createElement('a-entity');
             
-            // Inner sphere.
+            // Inner sphere
             const innerSphere = document.createElement('a-sphere');
             innerSphere.setAttribute('radius', '2');
             innerSphere.setAttribute('material', {
@@ -266,19 +260,17 @@ AFRAME.registerComponent('quest-markers', {
                 transparent: true
             });
 
-            // *** Fancy...
-            // Add text label
+            // Text label
             const label = document.createElement('a-text');
-            //label.setAttribute('value', quest.type === 'item' ? 'Item Quest' : 'Location Quest');
             label.setAttribute('value', quest.message);
             label.setAttribute('align', 'center');
-            label.setAttribute('color','#000');
+            label.setAttribute('color', '#000');
             label.setAttribute('position', '0 3 0');
             label.setAttribute('scale', '4 4 4');
-            //label.setAttribute('look-at', '[camera]');
+            label.setAttribute('rotation', '0 90 0');
             orb.appendChild(label);
 
-            // Add animation to outer sphere
+            // Animations
             outerSphere.setAttribute('animation', {
                 property: 'scale',
                 dir: 'alternate',
@@ -288,7 +280,6 @@ AFRAME.registerComponent('quest-markers', {
                 to: '1.2 1.2 1.2'
             });
 
-            // Add floating animation to main orb
             orb.setAttribute('animation', {
                 property: 'position',
                 dir: 'alternate',
@@ -298,8 +289,6 @@ AFRAME.registerComponent('quest-markers', {
                 to: `${quest.x} ${quest.y + 0.5} ${quest.z}`
             });
 
-            // ***
-
             // Position the orb
             orb.setAttribute('position', `${quest.x} ${quest.y} ${quest.z}`);
             
@@ -307,18 +296,21 @@ AFRAME.registerComponent('quest-markers', {
             orb.appendChild(innerSphere);
             orb.appendChild(outerSphere);
             
-            // Add to scene and track it
+            // Add to scene and track
             this.el.sceneEl.appendChild(orb);
             this.markers.set(id, orb);
+            console.log(`Added marker for quest ${id}`);
         }
     },
 
     clearAllMarkers: function() {
-        // Remove all existing markers
         if (!this.markers) return;
-        for (const marker of this.markers.values()) {
-            if (marker.parentNode) {
+        
+        console.log('Clearing all markers');
+        for (const [id, marker] of this.markers.entries()) {
+            if (marker && marker.parentNode) {
                 marker.parentNode.removeChild(marker);
+                console.log(`Removed marker ${id}`);
             }
         }
         this.markers.clear();
