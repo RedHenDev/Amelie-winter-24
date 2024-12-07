@@ -22,10 +22,10 @@ AFRAME.registerComponent('look-at', {
         direction.subVectors(this.target.position, 
             this.object.position).normalize();
 
-        // First, get the angle in the XZ plane (yaw)
+        // First, get the angle in the XZ plane (yaw).
         const yaw = Math.atan2(direction.x, direction.z);
 
-        // Then get the angle from the ground plane (pitch)
+        // Then get the angle from the ground plane (pitch).
         const pitch = Math.atan2(direction.y, Math.sqrt(direction.x * direction.x + direction.z * direction.z));
 
         // Apply the rotations.

@@ -9,7 +9,7 @@ attributions
 
 To Do & ideas
 
--feature ai dedicated movement component (rather than spaghetti in a-loco)
+DONE -feature ai dedicated movement component (rather than spaghetti in a-loco)
 
 -feature snomodillo to follow and talk with etc quest master
 

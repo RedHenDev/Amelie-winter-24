@@ -102,9 +102,9 @@ AFRAME.registerComponent('generate-hud', {
     // to scene and not Hud.
     //button5.setAttribute('position', "440 12 -365");
     button5.setAttribute('position', "440 12 -365");
+    button5.setAttribute('buttonText', 'position', '0 0 0.01');
     button5.setAttribute('scale', "12 12 12");
-    button5.setAttribute('buttonText', 'position', '0 0 0.001');
-    button5.setAttribute('look-at','targetID:#player;rSpeed:0.3');
+    button5.setAttribute('look-at','targetID:#player;rSpeed:1');
 
     // Add buttons to panel.
     panel.appendChild(button1);
