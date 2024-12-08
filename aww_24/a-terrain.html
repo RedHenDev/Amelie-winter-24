@@ -48,8 +48,8 @@
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
 
             <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item>
-            <a-asset-item id="mArm" src="./assets/model.obj"></a-asset-item>
-        
+            <a-asset-item id="mArm" src="./assets/snowfillo.obj"></a-asset-item>
+            <a-asset-item id="mSni" src="./assets/sniffler.obj"></a-asset-item>
         </a-assets>
 
 
@@ -186,12 +186,22 @@
         </a-obj-model>
         <a-obj-model    id="baby2"
                         src="#mArm" scale="0.6 0.6 0.6" 
-                        material="#iArm" color="#0BB" 
+                        material="#iArm" color="#000" 
                         position="-6 12 6"
                         ai-locomotion
                         look-at="targetID:#player; rSpeed:0.9"
                         >
         </a-obj-model>
+
+        <a-obj-model    id="sniffler"
+                        src="#mSni" scale="4 4 4" 
+                        color="#000" 
+                        position="0 6 -9"
+                        ai-locomotion="height:6;speed:0.3;aidrive:false;target:#baby2"
+                        
+                        >
+        </a-obj-model>
+        <!-- look-at="targetID:#baby2; rSpeed:0.666" -->
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 
@@ -215,7 +225,7 @@
 
         <script> 
                 
-                const hallHeight=-6.6;//getTerrainHeight(0,128);
+                const hallHeight=-6.8;//getTerrainHeight(0,128);
                 document.querySelector("#petite-hall").setAttribute
                     ('position',`88 ${hallHeight} 64`); 
         </script>
@@ -241,6 +251,7 @@
     <script src="HUD_menu.js"></script>
     <!-- Locomotion of player. -->
     <script src='a-loco.js'></script>
+    <script src="q-markers.js"></script>
     <script src="qman.js"></script>
     <!-- <script src="n_urizen.js"></script> -->
 
