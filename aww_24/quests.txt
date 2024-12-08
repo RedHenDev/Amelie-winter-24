@@ -1,6 +1,6 @@
 [Quest]
 id=1
-type=message
+type=messageBoard
 x=88
 y=-22
 z=64
@@ -12,7 +12,7 @@ completed=false
 
 [Quest]
 id=2
-type=location
+type=messageBoard
 x=500
 y=3
 z=-300
@@ -24,12 +24,12 @@ completed=false
 
 [Quest]
 id=3
-type=item
+type=messageBoard
 x=333
 y=22
 z=-550
 itemType=key
-message=The ancient ruins are ahead!\nThe gift of snow is said to lie within./nGood luck!
+message=The ancient ruins are ahead!\nThe gift of snow is said to lie within.\nGood luck!
 prerequisite=-1
 visible=true
 completed=false

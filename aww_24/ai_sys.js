@@ -4,7 +4,7 @@ AFRAME.registerComponent('ai-locomotion', {
         height: {type: 'number', default: 0.6},
         wiggle: {type: 'boolean', default: true},
         flee: {type: 'boolean', default: true},
-        target: {type: 'string', default: '#baby2'},
+        target: {type: 'string', default: '#player'},
         aidrive: {type: 'boolean', default: false}
 
     },
@@ -15,7 +15,7 @@ AFRAME.registerComponent('ai-locomotion', {
     },
 
     turn: function() {
-        this.rig.lookAt(this.target);
+        this.rig.lookAt(this.target.position);
     },
 
     tick: function(time, delta) {

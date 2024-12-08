@@ -37,7 +37,7 @@ AFRAME.registerComponent('look-at', {
             // Then get the angle from the ground plane (pitch).
             const pitch = Math.atan2(direction.y, 
                 Math.sqrt(direction.x * direction.x + direction.z * direction.z));
-            this.object.rotation.set(pitch * this.data.rSpeed, yaw * this.data.rSpeed, 0);
+            this.object.rotation.set(-pitch * this.data.rSpeed, yaw * this.data.rSpeed, 0);
             }
 
         }

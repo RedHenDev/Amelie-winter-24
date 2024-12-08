@@ -31,10 +31,10 @@ AFRAME.registerComponent('quest-markers', {
             return;
         }
 
-        // First, ensure proper cleanup
+        // First, ensure proper cleanup.
         this.clearAllMarkers();
 
-        // Get all active quests
+        // Get all active quests.
         const quests = this.questManager.getActiveQuests();
         console.log(`Found ${quests.size} quests to mark`);
 
@@ -48,7 +48,7 @@ AFRAME.registerComponent('quest-markers', {
             
             const orb = document.createElement('a-entity');
             
-            // Inner sphere
+            // Inner sphere.
             const innerSphere = document.createElement('a-sphere');
             innerSphere.setAttribute('radius', '2');
             innerSphere.setAttribute('material', {
@@ -59,7 +59,7 @@ AFRAME.registerComponent('quest-markers', {
                 transparent: true
             });
             
-            // Outer glow sphere
+            // Outer glow sphere.
             const outerSphere = document.createElement('a-sphere');
             outerSphere.setAttribute('radius', '3');
             outerSphere.setAttribute('material', {
@@ -70,17 +70,17 @@ AFRAME.registerComponent('quest-markers', {
                 transparent: true
             });
 
-            // Text label
+            // Text label.
             const label = document.createElement('a-text');
             label.setAttribute('value', quest.message);
             label.setAttribute('align', 'center');
             label.setAttribute('color', '#000');
-            label.setAttribute('position', '0 3 0');
-            label.setAttribute('scale', '4 4 4');
+            label.setAttribute('position', '0 0 2');
+            label.setAttribute('scale', '1 1 1');
             label.setAttribute('rotation', '0 0 0');
             orb.appendChild(label);
 
-            // Animations
+            // Animations.
             outerSphere.setAttribute('animation', {
                 property: 'scale',
                 dir: 'alternate',
@@ -99,17 +99,17 @@ AFRAME.registerComponent('quest-markers', {
                 to: `${quest.x} ${quest.y + 0.5} ${quest.z}`
             });
 
-            // Position the orb
+            // Position the orb.
             orb.setAttribute('position', `${quest.x} ${quest.y} ${quest.z}`);
             
-            // Assemble orb
+            // Assemble orb.
             orb.appendChild(innerSphere);
             orb.appendChild(outerSphere);
             
             // Look at subject...
-            orb.setAttribute('look-at','targetID:#player');
-            
-            // Add to scene and track
+            orb.setAttribute('look-at','targetID:#player;clampY:false;');
+
+            // Add to scene and track.
             this.el.sceneEl.appendChild(orb);
             this.markers.set(id, orb);
             console.log(`Added marker for quest ${id}`);

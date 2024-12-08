@@ -49,7 +49,7 @@
 
             <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item>
             <a-asset-item id="mArm" src="./assets/snowfillo.obj"></a-asset-item>
-            <a-asset-item id="mSni" src="./assets/sniffler.obj"></a-asset-item>
+            <a-asset-item id="mSni" src="./assets/sniffler2.obj"></a-asset-item>
         </a-assets>
 
 
@@ -180,28 +180,26 @@
                         src="#mArm" scale="1 1 1" 
                         material="#iArm" color="#803" 
                         position="0 12 -6"
-                        ai-locomotion
-                        look-at="targetID:#player; rSpeed:0.9"
+                        ai-locomotion="height:0.3;"
+                        look-at="targetID:#player; rSpeed:0.7"
                         >
         </a-obj-model>
         <a-obj-model    id="baby2"
                         src="#mArm" scale="0.6 0.6 0.6" 
                         material="#iArm" color="#000" 
                         position="-6 12 6"
-                        ai-locomotion
-                        look-at="targetID:#player; rSpeed:0.9"
+                        ai-locomotion="height:0.1;speed:0.45;"
+                        look-at="targetID:#player; rSpeed:0.8"
                         >
         </a-obj-model>
 
         <a-obj-model    id="sniffler"
                         src="#mSni" scale="4 4 4" 
-                        color="#000" 
+                        color="#EEB" 
                         position="0 6 -9"
-                        ai-locomotion="height:6;speed:0.3;aidrive:false;target:#baby2"
-                        
+                        ai-locomotion="height:6;speed:0.3;aidrive:true;flee:false;target:#baby2"
                         >
         </a-obj-model>
-        <!-- look-at="targetID:#baby2; rSpeed:0.666" -->
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 
@@ -234,13 +232,9 @@
                     position="88 0 64"></a-entity>
 
         <a-entity gltf-model="#great-hall"
-                    position ="0 332 -1488" 
+                    position ="0 340 -1488" 
                     scale="62 62 62"
                     rotation="0 0 0"></a-entity>
-        
-        <!-- <a-entity gltf-model="#hogz"
-                    position ="0 0.453 4" 
-                    scale="1 1 1"></a-entity> -->
 
         <!-- Lighting -->
         <a-light type="ambient" color="#888" intensity="0.6"></a-light> 
