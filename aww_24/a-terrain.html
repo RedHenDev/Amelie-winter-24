@@ -143,19 +143,14 @@
         <a-entity id='klaus' snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
         <a-entity id='jack' snow-system="count: 90; range: 40; height: 40; snowing: true"></a-entity>
 
-
-        <!-- Experimental nonsense. Hi mum! -->
-        <script defer src="glow-spheres.js"></script>
-        <a-entity sphere-generator="interval: 500; maxSpheres: 32" position="440 70 -432"></a-entity>
-        <!-- <script src='asteroids.js'></script> -->
-
         <!-- Terrain -->
         <a-entity   terrain-generator 
                     terrain-grass-generator 
                     terrain-toadstool-generator
                     terrain-forest-generator
-                    terrain-plant-generator
+                    
         ></a-entity>
+        <!-- terrain-plant-generator -->
 
         <!-- Quest system -->
         <a-entity quest-manager="questFile: quests.txt"></a-entity>
@@ -163,15 +158,20 @@
         <!-- Here is where we load in obj models -->
 
         <!-- Magical crystal Christmas tree. -->
-        <a-obj-model    src="#ent" scale="23 23 23" 
-                        material="color: #088; opacity: 0.8; depthTest: true" 
-                        position="440 -32 -432"></a-obj-model>
-        
+        <a-obj-model    src="#ent" scale="23 23 23"
+                        material="color: #088; opacity: 0.9; depthTest: true" 
+                        position="440 -32 -420"></a-obj-model>
+        <!-- Experimental nonsense. Hi mum! -->
+        <script defer src="glow-spheres.js"></script>
+        <a-entity   sphere-generator="interval: 500; maxSpheres: 32" 
+                    position="440 100 -400"></a-entity>
+        <!-- <script src='asteroids.js'></script> -->
+
         <!-- mobs! -->
         <a-obj-model    id="monty"
                         src="#mArm" scale="3 3 3" 
                         material="#iArm" color="#D0A" 
-                        position="0 12 -18"
+                        position="100 12 -18"
                         ai-locomotion
                         look-at="targetID:#player; rSpeed:0.8"
                         >
@@ -179,14 +179,13 @@
         <a-obj-model    id="baby"
                         src="#mArm" scale="1 1 1" 
                         material="#iArm" color="#803" 
-                        position="0 12 -6"
-                        ai-locomotion="height:0.3;"
-                        look-at="targetID:#player; rSpeed:0.7"
+                        position="100 12 -6"
+                        ai-locomotion="height:0.3;speed:0.3;aidrive:true;flee:false;target:#monty"
                         >
         </a-obj-model>
         <a-obj-model    id="baby2"
                         src="#mArm" scale="0.6 0.6 0.6" 
-                        material="#iArm" color="#000" 
+                        material="#iArm" color="#0CC" 
                         position="-6 12 6"
                         ai-locomotion="height:0.1;speed:0.45;"
                         look-at="targetID:#player; rSpeed:0.8"
@@ -196,7 +195,7 @@
         <a-obj-model    id="sniffler"
                         src="#mSni" scale="4 4 4" 
                         color="#EEB" 
-                        position="0 6 -9"
+                        position="12 6 -19"
                         ai-locomotion="height:6;speed:0.3;aidrive:true;flee:false;target:#baby2"
                         >
         </a-obj-model>
@@ -232,7 +231,7 @@
                     position="88 0 64"></a-entity>
 
         <a-entity gltf-model="#great-hall"
-                    position ="0 340 -1488" 
+                    position ="0 314 -1488" 
                     scale="62 62 62"
                     rotation="0 0 0"></a-entity>
 

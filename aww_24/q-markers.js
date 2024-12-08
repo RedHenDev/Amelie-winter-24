@@ -75,7 +75,7 @@ AFRAME.registerComponent('quest-markers', {
             label.setAttribute('value', quest.message);
             label.setAttribute('align', 'center');
             label.setAttribute('color', '#000');
-            label.setAttribute('position', '0 0 2');
+            label.setAttribute('position', '0 0 3');
             label.setAttribute('scale', '1 1 1');
             label.setAttribute('rotation', '0 0 0');
             orb.appendChild(label);
@@ -87,7 +87,7 @@ AFRAME.registerComponent('quest-markers', {
                 dur: 2000,
                 easing: 'easeInOutSine',
                 loop: true,
-                to: '1.2 1.2 1.2'
+                to: '1.4 1.4 1.4'
             });
 
             orb.setAttribute('animation', {
