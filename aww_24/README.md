@@ -11,6 +11,8 @@ To Do & ideas
 
 DONE -feature ai dedicated movement component (rather than spaghetti in a-loco)
 
+-feature cross-platform controls
+
 -feature control instructions
 
 -feature snomodillo to follow and talk with etc quest master

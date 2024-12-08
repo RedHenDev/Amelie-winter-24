@@ -3,7 +3,8 @@ AFRAME.registerComponent('look-at', {
     schema: {
         targetID: {type: 'string', default: '#play'},
         rSpeed: {type: 'number', default: 1},
-        clampY: {type: 'boolean', default: true}
+        clampY: {type: 'boolean', default: true},
+        flee: {type: 'boolean', default: false}
     },
 
     init: function() {
@@ -23,7 +24,9 @@ AFRAME.registerComponent('look-at', {
             this.object.position).normalize();
 
         // First, get the angle in the XZ plane (yaw).
-        const yaw = Math.atan2(direction.x, direction.z);
+        let fleep=0;
+        if (this.data.flee) fleep = 180;
+        const yaw = Math.atan2(direction.x, direction.z) + fleep;
 
         // Then get the angle from the ground plane (pitch).
         const pitch = Math.atan2(direction.y, Math.sqrt(direction.x * direction.x + direction.z * direction.z));

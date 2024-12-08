@@ -33,12 +33,21 @@ AFRAME.registerComponent('ai-locomotion', {
 
         if (this.data.aidrive){
             this.turn();
+            if (this.data.flee){
+                this.rig.rotation.y+=180;
+            }
         }
 
-        if (this.data.flee){
-            this.rig.position.x -= 
+        this.rig.position.x += 
                 Math.sin(this.rig.rotation.y)*this.data.speed * delta;
-            this.rig.position.z -= 
+            this.rig.position.z += 
+                Math.cos(this.rig.rotation.y)*this.data.speed * delta;
+
+        /*
+        if (this.data.flee){
+            this.rig.position.x += 
+                Math.sin(this.rig.rotation.y)*this.data.speed * delta;
+            this.rig.position.z += 
                 Math.cos(this.rig.rotation.y)*this.data.speed * delta;
         } else {
             this.rig.position.x += 
@@ -46,6 +55,7 @@ AFRAME.registerComponent('ai-locomotion', {
             this.rig.position.z += 
                 Math.cos(this.rig.rotation.y)*this.data.speed * delta;
         }
+        */
 
         if (!this.data.wiggle) return;
         // Wiggle?

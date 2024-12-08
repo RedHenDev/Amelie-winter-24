@@ -46,9 +46,11 @@
             <a-asset-item id="great-hall" src="great_hall.glb"></a-asset-item>
 
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
+            <a-asset-item id="gbox" src="./assets/gift.obj"></a-asset-item>
+            <a-asset-item id="iQueen" src="./assets/snowQueen.png"></a-asset-item>
 
-            <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item>
-            <a-asset-item id="mArm" src="./assets/snowfillo.obj"></a-asset-item>
+            <!-- <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item> -->
+            <a-asset-item id="mArm" src="./assets/snowdillo.gltf"></a-asset-item>
             <a-asset-item id="mSni" src="./assets/sniffler2.obj"></a-asset-item>
         </a-assets>
 
@@ -168,29 +170,29 @@
         <!-- <script src='asteroids.js'></script> -->
 
         <!-- mobs! -->
-        <a-obj-model    id="monty"
+        <a-gltf-model    id="monty"
                         src="#mArm" scale="3 3 3" 
-                        material="#iArm" color="#D0A" 
+                        color="#D0A" 
                         position="100 12 -18"
                         ai-locomotion
                         look-at="targetID:#player; rSpeed:0.8"
                         >
-        </a-obj-model>
-        <a-obj-model    id="baby"
+        </a-gltf-model>
+        <a-gltf-model    id="baby"
                         src="#mArm" scale="1 1 1" 
-                        material="#iArm" color="#803" 
+                        color="#803" 
                         position="100 12 -6"
                         ai-locomotion="height:0.3;speed:0.3;aidrive:true;flee:false;target:#monty"
                         >
-        </a-obj-model>
-        <a-obj-model    id="baby2"
+        </a-gltf-model>
+        <a-gltf-model    id="baby2"
                         src="#mArm" scale="0.6 0.6 0.6" 
-                        material="#iArm" color="#0CC" 
+                        color="#0CC" 
                         position="-6 12 6"
                         ai-locomotion="height:0.1;speed:0.45;"
-                        look-at="targetID:#player; rSpeed:0.8"
+                        look-at="targetID:#player; rSpeed:0.8;flee:true;"
                         >
-        </a-obj-model>
+        </a-gltf-model>
 
         <a-obj-model    id="sniffler"
                         src="#mSni" scale="4 4 4" 
@@ -229,6 +231,8 @@
         <a-entity   sphere-generator="interval: 50; maxSpheres: 320; 
                                         maxRadius: 0.4" 
                     position="88 0 64"></a-entity>
+
+        <a-plane src="#iQueen" position="0 12 -12" scale="40 40 0"></a-plane>
 
         <a-entity gltf-model="#great-hall"
                     position ="0 314 -1488" 
