@@ -36,8 +36,6 @@
 
     <script src="thalassa.js"></script>
 
-        <!-- <script src="auto_gallery.js"></script> -->
-
         <!-- preloading assets -->
         <a-assets>
         <!-- Preload our assets, such as the Monster Truck :) -->
@@ -47,13 +45,15 @@
 
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
             <a-asset-item id="gbox" src="./assets/gift.obj"></a-asset-item>
-            <a-asset-item id="iQueen" src="./assets/snowQueen.png"></a-asset-item>
+            <img crossorigin="anonymous" id="iQueen" src="./assets/snowQueen.png"></img>
+            <img crossorigin="anonymous" id="iQcode" src="./assets/aww_24.png"></img>
 
             <!-- <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item> -->
             <a-asset-item id="mArm" src="./assets/snowdillo.gltf"></a-asset-item>
             <a-asset-item id="mSni" src="./assets/sniffler2.obj"></a-asset-item>
         </a-assets>
 
+        <!-- <script src="auto_gallery.js"></script> -->
 
         <!-- Player with terrain locomotion system. -->
         <a-entity id="player" position="0 25 0" terrain-movement="height: 4.6">
@@ -167,10 +167,9 @@
         <script defer src="glow-spheres.js"></script>
         <a-entity   sphere-generator="interval: 500; maxSpheres: 32" 
                     position="440 100 -400"></a-entity>
-        <!-- <script src='asteroids.js'></script> -->
 
         <!-- mobs! -->
-        <a-gltf-model    id="monty"
+        <a-gltf-model   id="monty"
                         src="#mArm" scale="3 3 3" 
                         color="#D0A" 
                         position="100 12 -18"
@@ -198,6 +197,7 @@
                         src="#mSni" scale="4 4 4" 
                         color="#EEB" 
                         position="12 6 -19"
+                        material="src: #iQcode"
                         ai-locomotion="height:6;speed:0.3;aidrive:true;flee:false;target:#baby2"
                         >
         </a-obj-model>
@@ -232,9 +232,12 @@
                                         maxRadius: 0.4" 
                     position="88 0 64"></a-entity>
 
-        <a-plane src="#iQueen" position="0 12 -12" scale="40 40 0"></a-plane>
+        <a-plane    src="#iQueen" 
+                    position="0 12 -42" 
+                    scale="40 40 0"
+                    material="side: double"></a-plane>
 
-        <a-entity gltf-model="#great-hall"
+        <a-entity   gltf-model="#great-hall"
                     position ="0 314 -1488" 
                     scale="62 62 62"
                     rotation="0 0 0"></a-entity>
