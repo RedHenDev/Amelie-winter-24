@@ -33,3 +33,15 @@ message=The ancient ruins are ahead!\nThe gift of snow\nis said to lie within.\n
 prerequisite=-1
 visible=true
 completed=false
+
+[Quest]
+id=4
+type=messageBoard
+x=0
+y=4
+z=-135
+itemType=none
+message=Snow Queen: where is my snow? /nThere must be a clue near here.
+prerequisite=-1
+visible=true
+completed=false
