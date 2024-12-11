@@ -51,6 +51,8 @@
             <!-- <a-asset-item id="iArm" src="./assets/armadillo.png"></a-asset-item> -->
             <a-asset-item id="mArm" src="./assets/snowdillo.gltf"></a-asset-item>
             <a-asset-item id="mSni" src="./assets/sniffler2.obj"></a-asset-item>
+
+            <a-asset-item id="mMud" src="./assets/mud.glb"></a-asset-item>
         </a-assets>
 
         <!-- <script src="auto_gallery.js"></script> -->
@@ -153,6 +155,7 @@
                     
         ></a-entity>
         <!-- terrain-plant-generator -->
+        <!-- terrain-forest-generator -->
 
         <!-- Quest system -->
         <a-entity quest-manager="questFile: quests.txt"></a-entity>
@@ -201,6 +204,16 @@
                         ai-locomotion="height:6;speed:0.3;aidrive:true;flee:false;target:#baby2"
                         >
         </a-obj-model>
+
+        <a-entity   gltf-model="#mMud"
+                    id="spider-truck"
+                    scale="4 4 4"     
+                    position="0 6 6"
+                    >
+        </a-entity>
+
+        <!-- ai-locomotion="height:0.1;speed:0.45;" -->
+        <!-- look-at="targetID:#player; rSpeed:0.8;flee:true;" -->
 
         <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
                      animation="property: position; 

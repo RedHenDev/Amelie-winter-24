@@ -1,15 +1,367 @@
-// Procedural terrain generation
-let ws = prompt('Type a word or phrase to generate\n a new terrain.');
-const worldSeed = getSeed(ws);
+// Tree system optimized for performance
+AFRAME.registerComponent('tree-system', {
+    schema: {
+        count: { type: 'number', default: 32 },
+        range: { type: 'number', default: 64 },
+        minHeight: { type: 'number', default: 4 },
+        maxHeight: { type: 'number', default: 22 }
+    },
 
-function getSeed(seedWord) {
-    if (!seedWord) return 1;
-    let hash = 5381;
-    for (let i = 0; i < seedWord.length; i++) {
-        hash = ((hash << 5) + hash) + seedWord.charCodeAt(i);
+    init: function() {
+        this.active = false;
+        this.instancedTrees = null;
+        this.transforms = [];
+        
+        // Defer tree generation until after frame render to reduce initial lag
+        setTimeout(() => {
+            this.setupTrees();
+            this.active = true;
+        }, 100);
+    },
+
+    setupTrees: function() {
+        const treeGeometry = this.createSimplifiedTreeGeometry();
+        const material = new THREE.MeshStandardMaterial({
+            vertexColors: true,
+            roughness: 0.8,
+            metalness: 0.2,
+            flatShading: true
+        });
+
+        this.instancedTrees = new THREE.InstancedMesh(
+            treeGeometry,
+            material,
+            this.data.count
+        );
+        this.el.setObject3D('trees', this.instancedTrees);
+        this.populateTreeMeshes();
+    },
+
+    createSimplifiedTreeGeometry: function() {
+        // Simplified tree geometry with fewer vertices
+        const geometry = new THREE.CylinderGeometry(0.5, 1, 10, 6);
+        const colors = new Float32Array(geometry.attributes.position.count * 3);
+        
+        for (let i = 0; i < geometry.attributes.position.count; i++) {
+            colors[i * 3] = 0.2;
+            colors[i * 3 + 1] = 0.4;
+            colors[i * 3 + 2] = 0.1;
+        }
+        
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        return geometry;
+    },
+
+    populateTreeMeshes: function() {
+        const dummy = new THREE.Object3D();
+        const chunkOffsetX = this.el.object3D.position.x;
+        const chunkOffsetZ = this.el.object3D.position.z;
+
+        // Grid-based distribution
+        const gridSize = Math.sqrt(this.data.count);
+        const cellSize = this.data.range / gridSize;
+
+        for (let i = 0; i < this.data.count; i++) {
+            const row = Math.floor(i / gridSize);
+            const col = i % gridSize;
+            
+            const localX = (col - gridSize/2) * cellSize + (Math.random() - 0.5) * cellSize;
+            const localZ = (row - gridSize/2) * cellSize + (Math.random() - 0.5) * cellSize;
+            const worldX = localX + chunkOffsetX;
+            const worldZ = localZ + chunkOffsetZ;
+
+            const y = getTerrainHeight(worldX, worldZ);
+            if (y < -13) continue;
+
+            dummy.position.set(localX, y, localZ);
+            dummy.rotation.y = Math.random() * Math.PI * 2;
+            dummy.scale.setScalar(1 + Math.random() * 0.5);
+            dummy.updateMatrix();
+            
+            this.instancedTrees.setMatrixAt(i, dummy.matrix);
+        }
+        
+        this.instancedTrees.instanceMatrix.needsUpdate = true;
+    },
+
+    remove: function() {
+        if (this.instancedTrees) {
+            this.instancedTrees.geometry.dispose();
+            this.instancedTrees.material.dispose();
+            this.el.removeObject3D('trees');
+        }
     }
-    if (hash == NaN || hash === 5381) return 1;
-    return hash >>> 0;
+});
+
+// Optimized terrain generator
+AFRAME.registerComponent('terrain-generator', {
+    schema: {
+        maxChunks: { type: 'number', default: 64 }, // Maximum chunks to keep in memory
+        renderDistance: { type: 'number', default: 3 } // Radius of chunks around player
+    },
+
+    init: function() {
+        noise.init();
+        this.player = document.querySelector('#player').object3D;
+        this.chunkSize = 204;
+        this.lastChunkX = null;
+        this.lastChunkZ = null;
+
+        // Core chunk management
+        this.chunks = new Map(); // active chunks
+        this.chunkPool = []; // available chunks
+        this.chunkLoadQueue = new Set(); // chunks that need to be loaded
+        this.chunkUnloadQueue = new Set(); // chunks that need to be unloaded
+
+        // Initialize chunk pool
+        this.initializeChunkPool();
+
+        // Start chunk update loop
+        this.startChunkProcessing();
+    },
+
+    initializeChunkPool: function() {
+        for (let i = 0; i < this.data.maxChunks; i++) {
+            const geometry = new THREE.BufferGeometry();
+            const maxVertices = this.chunkSize * this.chunkSize;
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(maxVertices * 3), 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(maxVertices * 3), 3));
+            geometry.setAttribute('normal', new THREE.Float32BufferAttribute(new Float32Array(maxVertices * 3), 3));
+            
+            const material = new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                roughness: 0.8,
+                metalness: 0.2,
+                flatShading: true
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.visible = false;
+            this.el.object3D.add(mesh);
+            
+            this.chunkPool.push({
+                mesh,
+                inUse: false,
+                key: null,
+                lastUsed: 0
+            });
+        }
+    },
+
+    getChunkKey: function(x, z) {
+        return `${x},${z}`;
+    },
+
+    getChunkFromPool: function() {
+        // First try to find an unused chunk
+        let chunk = this.chunkPool.find(c => !c.inUse);
+        
+        if (!chunk) {
+            // If no unused chunks, find the oldest used chunk
+            const now = performance.now();
+            chunk = this.chunkPool.reduce((oldest, current) => {
+                if (!oldest || current.lastUsed < oldest.lastUsed) {
+                    return current;
+                }
+                return oldest;
+            }, null);
+
+            if (chunk && chunk.key) {
+                // Remove the old chunk from active chunks
+                this.chunks.delete(chunk.key);
+            }
+        }
+
+        if (chunk) {
+            chunk.inUse = true;
+            chunk.lastUsed = performance.now();
+            return chunk;
+        }
+
+        return null;
+    },
+
+    releaseChunk: function(chunk) {
+        if (!chunk) return;
+        chunk.inUse = false;
+        chunk.key = null;
+        chunk.mesh.visible = false;
+    },
+
+    startChunkProcessing: function() {
+        const processChunks = () => {
+            // Process a few chunks per frame
+            this.processChunkQueues();
+            requestAnimationFrame(processChunks);
+        };
+        requestAnimationFrame(processChunks);
+    },
+
+    processChunkQueues: function() {
+        // Process unload queue first to free up chunks
+        for (const key of this.chunkUnloadQueue) {
+            const chunk = this.chunks.get(key);
+            if (chunk) {
+                this.releaseChunk(chunk);
+                this.chunks.delete(key);
+            }
+        }
+        this.chunkUnloadQueue.clear();
+
+        // Process load queue
+        const startTime = performance.now();
+        const maxTimePerFrame = 8; // ms
+
+        for (const coord of this.chunkLoadQueue) {
+            if (performance.now() - startTime > maxTimePerFrame) {
+                break;
+            }
+
+            const [x, z] = coord.split(',').map(Number);
+            this.generateChunk(x, z);
+            this.chunkLoadQueue.delete(coord);
+        }
+    },
+
+    generateChunk: function(chunkX, chunkZ) {
+        const key = this.getChunkKey(chunkX, chunkZ);
+        if (this.chunks.has(key)) return;
+
+        const chunk = this.getChunkFromPool();
+        if (!chunk) return;
+
+        const offsetX = chunkX * (this.chunkSize - 1);
+        const offsetZ = chunkZ * (this.chunkSize - 1);
+        
+        // Generate geometry
+        const vertices = [];
+        const colors = [];
+        const indices = [];
+
+        // Generate vertices
+        for (let z = 0; z < this.chunkSize; z++) {
+            for (let x = 0; x < this.chunkSize; x++) {
+                const worldX = x + offsetX;
+                const worldZ = z + offsetZ;
+                const height = getTerrainHeight(worldX, worldZ);
+                vertices.push(worldX, height, worldZ);
+                
+                const color = new THREE.Color(getTerrainColor(height));
+                colors.push(color.r, color.g, color.b);
+            }
+        }
+
+        // Generate indices
+        const verticesPerRow = this.chunkSize;
+        for (let z = 0; z < verticesPerRow - 1; z++) {
+            for (let x = 0; x < verticesPerRow - 1; x++) {
+                const topLeft = z * verticesPerRow + x;
+                const topRight = topLeft + 1;
+                const bottomLeft = (z + 1) * verticesPerRow + x;
+                const bottomRight = bottomLeft + 1;
+
+                indices.push(topLeft, bottomLeft, topRight);
+                indices.push(bottomLeft, bottomRight, topRight);
+            }
+        }
+
+        // Update geometry
+        const geometry = chunk.mesh.geometry;
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
+
+        chunk.key = key;
+        chunk.mesh.visible = true;
+        this.chunks.set(key, chunk);
+
+        // Emit event for other systems
+        this.el.dispatchEvent(new CustomEvent('chunk-generated', {
+            detail: { chunkX, chunkZ, offsetX, offsetZ }
+        }));
+    },
+
+    updateChunks: function(centerX, centerZ) {
+        const renderDistance = this.data.renderDistance;
+        
+        // Determine which chunks should be loaded
+        const desiredChunks = new Set();
+        for (let x = centerX - renderDistance; x <= centerX + renderDistance; x++) {
+            for (let z = centerZ - renderDistance; z <= centerZ + renderDistance; z++) {
+                desiredChunks.add(this.getChunkKey(x, z));
+            }
+        }
+
+        // Queue chunks for unloading if they're too far
+        for (const [key, chunk] of this.chunks) {
+            if (!desiredChunks.has(key)) {
+                this.chunkUnloadQueue.add(key);
+            }
+        }
+
+        // Queue new chunks for loading
+        for (const key of desiredChunks) {
+            if (!this.chunks.has(key)) {
+                this.chunkLoadQueue.add(key);
+            }
+        }
+    },
+
+    tick: function() {
+        const currentChunkX = Math.floor(this.player.position.x / this.chunkSize);
+        const currentChunkZ = Math.floor(this.player.position.z / this.chunkSize);
+
+        // Only update chunks if player has moved to a new chunk
+        if (currentChunkX !== this.lastChunkX || currentChunkZ !== this.lastChunkZ) {
+            this.updateChunks(currentChunkX, currentChunkZ);
+            this.lastChunkX = currentChunkX;
+            this.lastChunkZ = currentChunkZ;
+        }
+    },
+
+    remove: function() {
+        // Clean up all chunks
+        this.chunkPool.forEach(chunk => {
+            if (chunk.mesh) {
+                chunk.mesh.geometry.dispose();
+                chunk.mesh.material.dispose();
+                this.el.object3D.remove(chunk.mesh);
+            }
+        });
+        
+        this.chunks.clear();
+        this.chunkPool = [];
+        this.chunkLoadQueue.clear();
+        this.chunkUnloadQueue.clear();
+    }
+});
+
+
+// Below here is procedural terrain functionality.
+// **********************************************
+// **********************************************
+
+// Procedural terrain generation.
+let ws=prompt('Type a word or phrase to generate\n a new terrain.');
+const worldSeed = getSeed(ws);
+//let ws='ihoooo';
+
+function getSeed(seedWord){
+    if (!seedWord) return 1;
+    // 1. Basic djb2 hash - 
+        // simple but effective for most cases.
+        
+        let hash = 5381;
+        for (let i = 0; i < seedWord.length; i++) 
+            {
+                hash = ((hash << 5) + hash) +
+                seedWord.charCodeAt(i);
+            }
+            if (hash==NaN||hash===5381) return 1;
+            return hash >>> 0; 
+        // Convert to unsigned 32-bit integer.
 }
 
 // Perlin noise implementation.
@@ -77,63 +429,6 @@ const noise = {
         );
     }
 };
-
-function getBiomeHeight(x, z, gSpread) {
-    const xCoord = x * 0.05 * gSpread;
-    const zCoord = z * 0.05 * gSpread;
-    
-    // Biome selection.
-    const biomeNoise = noise.noise(xCoord * 0.002, 0, zCoord * 0.002);
-    
-    let height = 0;
-    
-    // Default < 0.5.
-    // Hills is 0.6.
-    if (biomeNoise < 0.5) {
-        // Plains biome
-        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 8;
-        height += noise.noise(xCoord * 2, 0, zCoord * 2) * 4;
-        
-    } else if (biomeNoise < 0.6) {
-        // Hills biome
-        height += noise.noise(xCoord * 0.5, 0, zCoord * 0.5) * 20;
-        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 10;
-        
-    } else {
-        // Mountains biome
-        height += noise.noise(xCoord * 0.3, 0, zCoord * 0.3) * 35;
-        height += noise.noise(xCoord * 0.8, 0, zCoord * 0.8) * 15;
-        
-        // Sharp peaks
-        const peakNoise = noise.noise(xCoord * 1.5, 0, zCoord * 1.5);
-        if (peakNoise > 0.7) {
-            height += Math.pow(peakNoise - 0.7, 2) * 60;
-        }
-    }
-    
-    return height;
-}
-
-function getRidgeNoise(x, z) {
-    const n = noise.noise(x, 0, z);
-    return 1 - Math.abs(n); // Creates sharp ridges
-}
-
-function getErosionNoise(xCoord,zCoord){
-    // Erosion effect.
-    const erosionNoise = noise.noise(xCoord * 3, 0, zCoord * 3);
-    const slope = Math.abs(
-        noise.noise(xCoord + 0.1, 0, zCoord) - 
-        noise.noise(xCoord - 0.1, 0, zCoord)
-    );
-    
-    // More erosion on steeper slopes.
-    // Strength default is 10, not 20.
-    const erosionStrength=16;
-    if (slope > 0.2) {
-        return -erosionNoise * slope * erosionStrength;
-    } else return 0;
-}
 
 function getTerrainHeight(x, z) {
     // Default 0.05.
@@ -235,460 +530,60 @@ function getTerrainColor(height) {
     }
 }
 
-AFRAME.registerComponent('terrain-generator', {
-    schema: {
-        chunk: {type: 'vec2'},
-        poolSize: {type: 'number', default: 50}, // Added for optimization
-        preloadRadius: {type: 'number', default: 4} // Added for optimization
-    },
 
-    init: function() {
-        noise.init();
-        this.player = document.querySelector('#player').object3D;
-        this.chunks = new Map();
-        this.chunkPool = []; // New chunk pool
-        this.chunkSize = 204;
-        this.chunksToGen = 2;
-
-        // Initialize chunk pool
-        console.log('Initializing chunk pool...');
-        for (let i = 0; i < this.data.poolSize; i++) {
-            const chunk = this.createChunkMesh();
-            chunk.visible = false;
-            this.chunkPool.push(chunk);
-        }
-
-        // Pre-generate initial chunks
-        console.log('Pre-generating initial chunks...');
-        this.preloadChunks().then(() => {
-            console.log('Initial chunks generated');
-            this.el.emit('terrain-ready');
-        });
-    },
-
-    createChunkMesh: function() {
-        const maxVertices = (this.chunkSize * this.chunkSize);
-        const geometry = new THREE.BufferGeometry();
-        
-        // Preallocate buffers
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(maxVertices * 3), 3));
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(maxVertices * 3), 3));
-        
-        let material;
-        if (worldSeed != 1) {
-            material = new THREE.MeshStandardMaterial({
-                vertexColors: true,
-                roughness: 0.8,
-                metalness: 0.2,
-                flatShading: true
-            });
-        } else {
-            material = new THREE.MeshStandardMaterial({
-                vertexColors: true,
-                roughness: 0.6,
-                metalness: 0.1,
-                flatShading: true
-            });
-        }
-
-        return new THREE.Mesh(geometry, material);
-    },
-
-    getChunkFromPool: function() {
-        let chunk;
-        if (this.chunkPool.length > 0) {
-            chunk = this.chunkPool.pop();
-        } else {
-            console.warn('Chunk pool depleted, creating new chunk');
-            chunk = this.createChunkMesh();
-        }
-        chunk.visible = true;
-        return chunk;
-    },
-
-    returnChunkToPool: function(chunk) {
-        chunk.visible = false;
-        this.chunkPool.push(chunk);
-    },
-
-    preloadChunks: async function() {
-        const radius = this.data.preloadRadius;
-        const promises = [];
-        
-        // Generate chunks in a spiral pattern from center
-        for (let r = 0; r <= radius; r++) {
-            for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
-                const x = Math.round(Math.cos(angle) * r);
-                const z = Math.round(Math.sin(angle) * r);
-                promises.push(this.generateChunk(x, z));
-            }
-        }
-
-        return Promise.all(promises);
-    },
-
-    generateChunk: async function(chunkX, chunkZ) {
-        const chunkSize = this.chunkSize;
-        const resolution = 1;
-        const vertices = [];
-        const indices = [];
-        const colors = [];
-        
-        const offsetX = chunkX * (chunkSize - 1);
-        const offsetZ = chunkZ * (chunkSize - 1);
-        
-        // Get or create chunk mesh
-        const chunk = this.getChunkFromPool();
-        const geometry = chunk.geometry;
-
-        // Generate vertices
-        for (let z = 0; z < chunkSize; z += resolution) {
-            for (let x = 0; x < chunkSize; x += resolution) {
-                const worldX = x + offsetX;
-                const worldZ = z + offsetZ;
-                const height = getTerrainHeight(worldX, worldZ);
-                vertices.push(worldX, height, worldZ);
-            }
-        }
-
-        // Generate indices
-        const verticesPerRow = chunkSize / resolution;
-        for (let z = 0; z < verticesPerRow - 1; z++) {
-            for (let x = 0; x < verticesPerRow - 1; x++) {
-                const topLeft = z * verticesPerRow + x;
-                const topRight = topLeft + 1;
-                const bottomLeft = (z + 1) * verticesPerRow + x;
-                const bottomRight = bottomLeft + 1;
-
-                indices.push(topLeft, bottomLeft, topRight);
-                indices.push(bottomLeft, bottomRight, topRight);
-            }
-        }
-
-        // Generate colors
-        for (let i = 0; i < vertices.length; i += 3) {
-            const height = vertices[i + 1];
-            const color = new THREE.Color(getTerrainColor(height));
-            colors.push(color.r, color.g, color.b);
-        }
-
-        // Update geometry
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        geometry.computeVertexNormals();
-
-        this.el.object3D.add(chunk);
-        this.chunks.set(`${chunkX},${chunkZ}`, chunk);
-
-        // Emit chunk-generated event for other components
-        const event = new CustomEvent('chunk-generated', {
-            detail: { 
-                chunkX, 
-                chunkZ,
-                offsetX,
-                offsetZ
-            }
-        });
-        this.el.dispatchEvent(event);
-
-        return chunk;
-    },
-
-    tick: function() {
-        const player = this.player;
-        const chunkSize = this.chunkSize;
-        
-        const chunkX = Math.floor(player.position.x / chunkSize);
-        const chunkZ = Math.floor(player.position.z / chunkSize);
-        
-        // Generate surrounding chunks if they don't exist
-        for (let z = chunkZ - this.chunksToGen; z <= chunkZ + this.chunksToGen; z++) {
-            for (let x = chunkX - this.chunksToGen; x <= chunkX + this.chunksToGen; x++) {
-                const key = `${x},${z}`;
-                if (!this.chunks.has(key)) {
-                    this.generateChunk(x, z);
-                }
-            }
-        }
-
-        // Remove far chunks
-        for (const [key, chunk] of this.chunks.entries()) {
-            const [x, z] = key.split(',').map(Number);
-            if (Math.abs(x - chunkX) > (this.chunksToGen + 1) || 
-                Math.abs(z - chunkZ) > (this.chunksToGen + 1)) {
-                this.el.object3D.remove(chunk);
-                this.returnChunkToPool(chunk);
-                this.chunks.delete(key);
-            }
-        }
-    },
-
-    remove: function() {
-        // Cleanup all chunks and pool
-        for (const chunk of this.chunks.values()) {
-            this.el.object3D.remove(chunk);
-            chunk.geometry.dispose();
-            chunk.material.dispose();
-        }
-        for (const chunk of this.chunkPool) {
-            chunk.geometry.dispose();
-            chunk.material.dispose();
-        }
-        this.chunks.clear();
-        this.chunkPool = [];
-    }
-});
-
-// Modify terrain-movement component to wait for terrain
-AFRAME.registerComponent('terrain-movement', {
-    schema: {
-        height: {type: 'number', default: 4.6}
-    },
-
-    init: function() {
-        // Existing initialization code
-        this.velocity = new THREE.Vector3();
-        this.targetY = 0;
-        
-        this.fov = 80;
-        this.cam = document.querySelector("#cam").object3D;
-        this.rig = document.querySelector("#player").object3D;
-        this.timeStamp = Date.now();
-        this.moveZ = 0;
-        this.moveX = 0;
-
-        this.running = false;
-        this.flying = false;
-        this.hud = document.querySelector("#hud").object3D;
-
-        this.lunaBounce = false;
-        this.jumpTime = Date.now();
-        this.jumping = false;
-        this.presentJumpSpeed = 0.5;
-
-        // Add terrain ready check
-        this.enabled = true;
-        const terrainEl = document.querySelector('[terrain-generator]');
-        if (terrainEl) {
-            terrainEl.addEventListener('terrain-ready', () => {
-                console.log('Terrain ready, enabling movement');
-                this.enabled = true;
-            });
-        }
-        
-        // Setup key listeners for smoother movement.
-        this.keys = {
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-            w: false,
-            s: false,
-            a: false,
-            d: false,
-            ShiftLeft: false
-        };
-        
-        document.addEventListener('keydown', (e) => this.keys[e.key] = true);
-        document.addEventListener('keyup', (e) => this.keys[e.key] = false);
-        // Also listen for shift key...
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'ShiftLeft') {
-                this.keys.ShiftLeft = true;
-            }
-        });
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'ShiftLeft') {
-                this.keys.ShiftLeft = false;
-            }
-        });
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
-                this.hudToggle();
-            }
-        });
-    },
-
-    hudToggle: function(){
-        this.hud.visible=!this.hud.visible;
-                if (this.hud.visible){
-                this.hud.position.y=2;
-                this.hud.rotation.y=this.cam.rotation.y;
-                }
-                else this.hud.position.y=999;
-            
-    },
+function getBiomeHeight(x, z, gSpread) {
+    const xCoord = x * 0.05 * gSpread;
+    const zCoord = z * 0.05 * gSpread;
     
-
-    tick: function(time, delta) {
-        if (!this.enabled || !delta) return;
-        delta = delta * 0.001; // Convert to seconds.
-        
-        const position = this.rig.position;
-        const rotation = this.cam.rotation;
-
-        // Camera controls testing, for VR (and mobile).
-        //if(AFRAME.utils.device.isMobile()){
-            const pitch=rotation.x;
-            const roll=rotation.z;
-
-        // Location of co-ords projected to a HUD.
-        document.querySelector('#micro-hud-text').setAttribute(
-            'value',`${Math.floor(position.x*0.01)} ${Math.floor(position.z*0.01)}`);
-        
-            // document.querySelector('#micro-hud-text').setAttribute(
-            //     'value',`${pitch}`);
-            
-            // Let's try a toggle left.
-            const minZ=0.3;  // Default 0.2.
-			const maxZ=0.5; // Default 0.4.
-                if ((roll > minZ && roll < maxZ)){
-                    //console.log('rooling?');
-            // Log time stamp. This will be for
-            // toggling via head z rotations.
-            // Have 2s elapsed?
-            let cTime = Date.now();
-            if (cTime-this.timeStamp > 2000){
-            
-                // Toggle locomotion.
-                this.timeStamp=Date.now();
-                if(this.moveZ==1) this.moveZ=0;
-                else this.moveZ=1;
-
-                // Build testing...
-                // const bud = document.createElement('a-box');
-                // bud.setAttribute('position', `  ${position.x} 
-                //                                 ${position.y+5}
-                //                                 ${position.z-5}`);
-                // bud.setAttribute('scale','2 2 2');
-                // bud.setAttribute('color','#FFF');
-                // document.querySelector('a-scene').appendChild(bud);
-                //console.log('boomy');
-                
-            }
-        //}
-        }
-
-        // Let's try a toggle to the right.
-        const RminZ=-0.3;  
-        const RmaxZ=-0.5;
-         //document.querySelector('#hud-text').setAttribute('value',`${roll}`);
-        if ((roll < RminZ && roll > RmaxZ)){
-            //console.log('right toggle!');
-         // Log time stamp. This will be for
-         // toggling via head z rotations.
-         // Have 2s elapsed?
-            let cTime = Date.now();
-            if (cTime-this.timeStamp > 2000){
-                this.timeStamp=Date.now();
-                //this.hud.visible=!this.hud.visible;
-                this.hudToggle();
-            }
-        }
-
-        // Calculate movement direction.
-        // Have negated sign of 1 here -- before, inverted movement bug.
-        if(!AFRAME.utils.device.isMobile()){
-            
-            this.moveX =    (this.keys.a || this.keys.ArrowLeft ? -1 : 0) + 
-                            (this.keys.d || this.keys.ArrowRight ? 1 : 0);
-            this.moveZ =    (this.keys.w || this.keys.ArrowUp ? 1 : 0) + 
-                            (this.keys.s || this.keys.ArrowDown ? -1 : 0);
-
-            // Running toggle via shift.
-            let sTime = Date.now();
-            if (sTime-this.timeStamp > 500){
-                if (this.keys.ShiftLeft) {
-                    this.running=!this.running;
-                    this.timeStamp=Date.now();
-                }
-            }
-            
-
-        } 
-
-        
-        // Running settings!
-        let run_speed=1;
-        if (this.running) { 
-            run_speed = 5;
-            } else {
-                run_speed = 1;
-                
-                }
-        
-        
-        // Return fov to normal, i.e. not running.
-        if (this.fov<80){this.fov=80;}
-        else 
-            {document.querySelector("#cam").setAttribute("fov",`${this.fov-=0.5}`);}
-        
-
-        // Apply movement in camera direction.
-        if (this.moveX !== 0 || this.moveZ !== 0) {
-            const angle = rotation.y;
-            
-            if (this.running)
-            document.querySelector("#cam").setAttribute("fov",`${this.fov+=0.6}`);
-            if (this.fov>120)this.fov=120;
-
-            const speed = 5 * run_speed;
-
-            this.velocity.x = (-this.moveZ * Math.sin(angle) + this.moveX * Math.cos(angle)) * speed;
-            this.velocity.z = (-this.moveZ * Math.cos(angle) - this.moveX * Math.sin(angle)) * speed;
-        } else {
-            this.velocity.x *= 0.9;
-            this.velocity.z *= 0.9;
-        }
-        
-        // Update position.
-        position.x += this.velocity.x * delta;
-        position.z += this.velocity.z * delta;
-        
-        // Get terrain height at current position.
-        const terrainY = getTerrainHeight(position.x, position.z);
-        this.targetY = terrainY + this.data.height;
-        
-        // Test hack to use ridges button as luna bounce.
-        //this.lunaBounce=ridges;
-        if (this.flying){
-            // Pitch can affect y position...for flight :D
-            //position.y += pitch*0.06 * Math.abs(this.velocity.z+this.velocity.x);
-            position.y += pitch*0.4*this.moveZ;
-        } else if (this.lunaBounce) {
-            if (!this.jumping){
-                position.y -= this.presentJumpSpeed;
-                // Moony = 1.01 Earthy = 1.1
-                this.presentJumpSpeed *= 1.02;
-            }
-            else if (this.jumping && this.moveZ==1){
-                position.y += this.presentJumpSpeed;
-                // Friction upward is 0.986.
-                this.presentJumpSpeed *= 0.986;
-                // The smaller the number below, the smoother the crest and fall.
-                // 0.0085 is nice.
-                if (this.presentJumpSpeed <= 0.0085){
-                    this.jumping=false;
-                }
-            }
-        } else if (!this.lunaBounce) {
-            // So, just walking...interpolate to target. Slower if in water (<=-12).
-            if (position.y <= -12) 
-                position.y += (this.targetY - position.y) * 0.01;
-            else
-                position.y += (this.targetY - position.y) * 0.1;
-        }
-
-        // Prevent falling below present surface.
-        if (position.y < this.targetY) {
-            //this.jumpTime=Date.now();
-            if (this.lunaBounce){
-                this.jumping=true;
-                this.presentJumpSpeed=0.1;
-            }
-            position.y = terrainY + this.data.height;
-        }
+    // Biome selection.
+    const biomeNoise = noise.noise(xCoord * 0.002, 0, zCoord * 0.002);
     
+    let height = 0;
+    
+    // Default < 0.5.
+    // Hills is 0.6.
+    if (biomeNoise < 0.5) {
+        // Plains biome
+        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 8;
+        height += noise.noise(xCoord * 2, 0, zCoord * 2) * 4;
+        
+    } else if (biomeNoise < 0.6) {
+        // Hills biome
+        height += noise.noise(xCoord * 0.5, 0, zCoord * 0.5) * 20;
+        height += noise.noise(xCoord * 1, 0, zCoord * 1) * 10;
+        
+    } else {
+        // Mountains biome
+        height += noise.noise(xCoord * 0.3, 0, zCoord * 0.3) * 35;
+        height += noise.noise(xCoord * 0.8, 0, zCoord * 0.8) * 15;
+        
+        // Sharp peaks
+        const peakNoise = noise.noise(xCoord * 1.5, 0, zCoord * 1.5);
+        if (peakNoise > 0.7) {
+            height += Math.pow(peakNoise - 0.7, 2) * 60;
+        }
     }
-});
+    
+    return height;
+}
+
+function getRidgeNoise(x, z) {
+    const n = noise.noise(x, 0, z);
+    return 1 - Math.abs(n); // Creates sharp ridges
+}
+
+function getErosionNoise(xCoord,zCoord){
+    // Erosion effect.
+    const erosionNoise = noise.noise(xCoord * 3, 0, zCoord * 3);
+    const slope = Math.abs(
+        noise.noise(xCoord + 0.1, 0, zCoord) - 
+        noise.noise(xCoord - 0.1, 0, zCoord)
+    );
+    
+    // More erosion on steeper slopes.
+    // Strength default is 10, not 20.
+    const erosionStrength=16;
+    if (slope > 0.2) {
+        return -erosionNoise * slope * erosionStrength;
+    } else return 0;
+}
