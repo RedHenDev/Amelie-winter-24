@@ -52,8 +52,7 @@
             <a-asset-item id="mArm" src="./assets/snowdillo.gltf"></a-asset-item>
             <a-asset-item id="mSni" src="./assets/sniffler2.obj"></a-asset-item>
 
-            <a-asset-item id="mMud" src="./assets/mud.glb"></a-asset-item>
-        </a-assets>
+             </a-assets>
 
         <!-- <script src="auto_gallery.js"></script> -->
 
@@ -63,8 +62,8 @@
                 <!-- micro HUD Interface -->
                 <a-entity id="micro-hud">
                     <!-- Background panel. -->
-                    <a-plane position="0 -0.6 -3"
-                                width="0.8" height="0.3"
+                    <a-plane    position="0 -0.6 -3"
+                                width="1.2" height="0.4"
                                 material="color: #0AA; opacity: 0.1; depthTest: false">
                                 <a-text  
                                     id="micro-hud-text"
@@ -176,11 +175,14 @@
                         src="#mArm" scale="3 3 3" 
                         color="#D0A" 
                         position="100 12 -18"
-                        ai-locomotion
-                        look-at="targetID:#player; rSpeed:0.8"
+                        ai-locomotion="height:0.6;speed:0.5;
+                        turnSpeed:0.3;
+                        aidrive:true;flee:false;target:#player"
+                        
                         >
         </a-gltf-model>
-        <a-gltf-model    id="baby"
+        <!-- look-at="targetID:#player; rSpeed:0.8" -->
+        <a-gltf-model   id="baby"
                         src="#mArm" scale="1 1 1" 
                         color="#803" 
                         position="100 12 -6"
@@ -205,29 +207,6 @@
                         >
         </a-obj-model>
 
-        <a-entity   gltf-model="#mMud"
-                    id="spider-truck"
-                    scale="4 4 4"     
-                    position="0 6 6"
-                    >
-        </a-entity>
-
-        <!-- ai-locomotion="height:0.1;speed:0.45;" -->
-        <!-- look-at="targetID:#player; rSpeed:0.8;flee:true;" -->
-
-        <!-- <a-obj-model src="#edward" scale="4 4 4" position="84 12 -42" color="#999" 
-                     animation="property: position; 
-                     dir: alternate;
-                     dur: 2000;
-                     easing: easeInOutSine;
-                     loop: true;
-                     from: 84 12 -42;
-                     to: 84 18 -42"></a-obj-model> -->
-
-        <!-- A Monster Truck! -->
-        <!-- <a-obj-model src="#grave-digger" scale="3 3 3" color="pink"></a-obj-model> -->
-        <!-- <a-obj-model src="#grave-digger" position ="64 1.8 -42" scale="0.03 0.03 0.03" color="white"></a-obj-model> -->
-
         <a-entity 
                     id="petite-hall"
                     gltf-model="#great-hall"
@@ -246,7 +225,7 @@
                     position="88 0 64"></a-entity>
 
         <a-plane    src="#iQueen" 
-                    position="0 12 -42" 
+                    position="0 12 -142" 
                     scale="40 40 0"
                     material="side: double"></a-plane>
 

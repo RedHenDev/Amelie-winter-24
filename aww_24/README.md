@@ -9,9 +9,11 @@ attributions
 
 To Do & ideas
 
+-bug ai locomotion spinning when close to target
+
 DONE -feature ai dedicated movement component (rather than spaghetti in a-loco)
 
--feature cross-platform controls
+-feature cross-platform controls (menu button on screen?)
 
 -feature control instructions
 
