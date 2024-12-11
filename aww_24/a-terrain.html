@@ -193,10 +193,12 @@
                         src="#mArm" scale="0.6 0.6 0.6" 
                         color="#0CC" 
                         position="-6 12 6"
-                        ai-locomotion="height:0.1;speed:0.45;"
-                        look-at="targetID:#player; rSpeed:0.8;flee:true;"
+                        ai-locomotion="height:0.1;speed:0.45;aidrive:true;
+                        flee:false;target:#player;turnSpeed:0.3;"
+                        
                         >
         </a-gltf-model>
+        <!-- look-at="targetID:#player; rSpeed:0.8;flee:true;" -->
 
         <a-obj-model    id="sniffler"
                         src="#mSni" scale="4 4 4" 
