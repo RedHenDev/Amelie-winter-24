@@ -43,6 +43,7 @@
         
             <a-asset-item id="great-hall" src="great_hall.glb"></a-asset-item>
 
+            <a-assset-item id="snowQstatue" src="./assets/queen.glb"></a-assset-item>
             <a-asset-item id="ent" src="tree.obj"></a-asset-item>
             <a-asset-item id="gbox" src="./assets/gift.obj"></a-asset-item>
             <img crossorigin="anonymous" id="iQueen" src="./assets/snowQueen.png"></img>
@@ -143,7 +144,7 @@
         </a-entity> 
 
         <!-- Snee! -->
-        <a-entity id='klaus' snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
+        <a-entity id='klaus' position="36 100 -1026" snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
         <a-entity id='jack' snow-system="count: 90; range: 40; height: 40; snowing: true"></a-entity>
 
         <!-- Terrain -->
@@ -215,6 +216,14 @@
                     position ="0 0 0" 
                     scale="1 1 1"
                     rotation="0 0 0"></a-entity>
+
+        <a-entity  
+                id="queen"
+                gltf-model="#snowQstatue"
+                position="94 14 -1044"
+                scale="10 10 10"
+                >
+        </a-entity>
 
         <script> 
                 

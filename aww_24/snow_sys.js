@@ -62,7 +62,7 @@ AFRAME.registerComponent('snow-system', {
         
         if (!this.data.snowing) {
             this.el.object3D.visible=false;
-            this.el.object3D.position=this.pl.position;
+            //this.el.object3D.position=this.pl.position;
             return;
         }
         this.el.object3D.visible=true;
