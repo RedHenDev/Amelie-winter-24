@@ -14,34 +14,34 @@ AFRAME.registerComponent('ai-locomotion', {
         this.target = document.querySelector(this.data.target).object3D;
         this.currentRotation = new THREE.Vector3();
         this.targetRotation = new THREE.Vector3();
-        const rts = Math.random();
-        if (rts < 0.3){
-            this.randTimeStop = 300 + rts;
-        } else if (rts < 0.6){
-            this.randTimeStop = 500 + rts;
-        } else {
-            this.randTimeStop = 700 + rts;
-        }
-        this.timeStamp = Date.now();
-        this.paused = false;
-        this.pausedTimeStamp = Date.now();
+        // const rts = Math.random();
+        // if (rts < 0.3){
+        //     this.randTimeStop = 300 + rts;
+        // } else if (rts < 0.6){
+        //     this.randTimeStop = 500 + rts;
+        // } else {
+        //     this.randTimeStop = 700 + rts;
+        // }
+        // this.timeStamp = Date.now();
+        // this.paused = false;
+        // this.pausedTimeStamp = Date.now();
         
     },
 
     turn: function() {
         // If time to pause, then do so.
-        const timeNow = Date.now();
-        if (!this.paused && (timeNow - this.timeStamp >= this.randTimeStop)){
-            this.paused = true;
-            this.pausedTimeStamp = timeNow;
-        }
-        if (this.paused){
-            if (timeNow - this.pausedTimeStamp >= 200){
-                this.paused = false;
-                this.timeStamp = timeNow;
-            } else return;
+        // const timeNow = Date.now();
+        // if (!this.paused && (timeNow - this.timeStamp >= this.randTimeStop)){
+        //     this.paused = true;
+        //     this.pausedTimeStamp = timeNow;
+        // }
+        // if (this.paused){
+        //     if (timeNow - this.pausedTimeStamp >= 200){
+        //         this.paused = false;
+        //         this.timeStamp = timeNow;
+        //     } else return;
 
-        }
+        // }
 
 
         // Store current rotation.
@@ -76,13 +76,15 @@ AFRAME.registerComponent('ai-locomotion', {
         distFromTarget.subVectors(this.target.position, 
             this.rig.position);
 
-        if (this.data.aidrive && 
-            (!(distFromTarget.length() > 6) || this.data.flee)){
-            this.turn();
-            if (this.data.flee){
-                this.rig.rotation.y += Math.PI; // Add 180 degrees in radians
-            }
-        }
+        this.turn();
+
+        // if (this.data.aidrive && 
+        //     (!(distFromTarget.length() > 6) || this.data.flee)){
+        //     this.turn();
+        //     if (this.data.flee){
+        //         this.rig.rotation.y += Math.PI; // Add 180 degrees in radians
+        //     }
+        // }
 
         this.rig.position.x += 
                 Math.sin(this.rig.rotation.y)*this.data.speed * delta;

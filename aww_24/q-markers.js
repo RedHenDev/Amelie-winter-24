@@ -1,7 +1,7 @@
 AFRAME.registerComponent('quest-markers', {
     init: function() {
         this.markers = new Map();
-        this.player = document.querySelector('#player').object3D;
+        this.player = document.querySelector('#cam').object3D;
 
         const checkQuestManager = () => {
             const questManager = document.querySelector('[quest-manager]');
