@@ -61,21 +61,22 @@
         <a-entity id="player" position="0 25 0" terrain-movement="height: 4.6">
             <a-camera id="cam" wasd-controls="enabled: false" look-controls>
                 <!-- micro HUD Interface -->
-                <a-entity id="micro-hud">
+                
+                <!-- <a-entity id="micro-hud"> -->
                     <!-- Background panel. -->
-                    <a-plane    position="0 -0.6 -3"
-                                width="1.2" height="0.4"
-                                material="color: #0AA; opacity: 0.1; depthTest: false">
-                                <a-text  
-                                    id="micro-hud-text"
-                                    value="Amèlie Land"
+                    <!-- <a-plane    position="0 -0.6 -3" -->
+                                <!-- width="1.2" height="0.4" -->
+                                <!-- material="color: #0AA; opacity: 0.1; depthTest: false"> -->
+                                <!-- <a-text   -->
+                                    <!-- id="micro-hud-text" -->
+                                    <!-- value="Amèlie Land"
                                     position="0 0 0.01"
                                     scale="1 1 1" 
                                     align="center"
-                                    color="#000">
-                            </a-text>
-                        </a-plane>
-                </a-entity>
+                                    color="#000"> -->
+                            <!-- </a-text> -->
+                        <!-- </a-plane> -->
+                <!-- </a-entity>-->
                 <!-- end of micro-HUD -->
                 <!-- Headlights... -->
                 <!-- <a-entity
@@ -113,7 +114,7 @@
         <!-- set X value of 'to:' to 360 to work. -->
             <a-entity id="blinky"
             animation="property: rotation;
-                        dur: 40000;
+                        dur: 80000;
                         easing: linear;
                         loop: true;
                         to: 360 0 0" >
@@ -144,7 +145,7 @@
         </a-entity> 
 
         <!-- Snee! -->
-        <a-entity id='klaus' position="36 100 -1026" snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
+        <a-entity id='klaus' position="36 40 -1026" snow-system="count: 90000; range: 40; height: 40; snowing: false"></a-entity>
         <a-entity id='jack' snow-system="count: 90; range: 40; height: 40; snowing: true"></a-entity>
 
         <!-- Terrain -->
